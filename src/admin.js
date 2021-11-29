@@ -18,8 +18,8 @@ router.get(
       .firestore()
       .collection("map")
       .get()
-      .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
-      .then((docs) => res.status(200).json({ docs }))
+      .then((snap) => snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() })))
+      .then((mappings) => res.status(200).json({ mappings }))
   )
 );
 
@@ -40,15 +40,15 @@ router.post(
 // API to delete a mapping
 // POST RPC instead of using DEL method to avoid cors pre-flight request
 router.post(
-  "/delete/:mappingID",
-  asyncWrap(async (req, res) =>
+  "/delete/:slug",
+  asyncWrap(async (req, res) => {
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
-      .doc(req.params.mappingID)
+      .doc(req.params.slug)
       .delete()
-      .then(() => res.status(200).json({}))
-  )
+      .then(() => res.status(200).json({}));
+  })
 );
 
 module.exports = router;

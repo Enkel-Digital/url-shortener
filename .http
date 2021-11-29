@@ -2,11 +2,29 @@
 @hostname = http://localhost
 @host = {{hostname}}:8080
 
+# Variable to test creating a new mapping and deleting it
+@testingSlug = testing123
+
 ### Base URL and health probe
 GET {{host}}/
 
-### Test slug
+### Test valid slug
 GET {{host}}/slug-test
 
-### Test slug
+### Test invalid slug
 GET {{host}}/invalid-slug-test
+
+### Get all mappings
+GET {{host}}/admin/mappings/all
+
+### Create new mapping
+POST {{host}}/admin/mappings/new
+content-type: application/json
+
+{
+    "slug": "{{testingSlug}}",
+    "url": "https://enkeldigital.com"
+}
+
+### Delete mapping
+POST {{host}}/admin/mappings/delete/{{testingSlug}}
