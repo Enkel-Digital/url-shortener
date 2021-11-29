@@ -32,7 +32,7 @@ router.post(
       .firestore()
       .collection("map")
       .doc(req.body.slug)
-      .set({ url: req.body.url })
+      .set({ url: req.body.url, createdAt: require("unixseconds")() })
       .then(() => res.status(201).json({}))
   )
 );
