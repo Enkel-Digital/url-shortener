@@ -27,6 +27,25 @@ router.get(
 router.post(
   "/new",
   express.json(),
+
+  // Middleware to ensure slug/url is available and URL is validated
+  (req, res, next) => {
+    if (!req.body.slug)
+      res
+        .status(400)
+        .json({ error: "Missing 'slug' property in request body" });
+    else if (!req.body.url)
+      res
+        .status(400)
+        .json({ error: "Missing 'url' property in request body." });
+    else if (require("./isInvalidURL.js")(req.body.url))
+      res.status(400).json({
+        error:
+          "Invalid 'url' property in request body, must be a proper full URL with http/https protocol",
+      });
+    else next();
+  },
+
   asyncWrap(async (req, res) =>
     require("@enkeldigital/firebase-admin")
       .firestore()
