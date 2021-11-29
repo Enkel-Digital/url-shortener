@@ -1,0 +1,12 @@
+# Global file variable definitions
+@hostname = http://localhost
+@host = {{hostname}}:8080
+
+### Base URL and health probe
+GET {{host}}/
+
+### Test slug
+GET {{host}}/slug-test
+
+### Test slug
+GET {{host}}/invalid-slug-test
