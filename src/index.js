@@ -14,31 +14,7 @@ app.use(require("helmet")());
 
 app.get("/", (req, res) => res.status(200).send("ZCA URL Shortener"));
 
-app.get(
-  "/:slug",
-  asyncWrap(async (req, res) => {
-    const { slug } = req.params;
-    if (!slug)
-      // This should not happen as the base case / is caught by the base URL handler
-      return res.status(500).send("Internal Error: Missing URL Slug!");
-
-    const snapshot = await require("@enkeldigital/firebase-admin")
-      .firestore()
-      .collection("map")
-      .doc(slug)
-      .get();
-    if (!snapshot.exists)
-      return res.status(404).send("Error: Invalid URL Slug");
-
-    const { url } = snapshot.data();
-    if (!url)
-      return res
-        .status(500)
-        .send("Internal Error: Missing URL Slug in document");
-
-    res.redirect(url);
-  })
-);
+app.get("/:slug", asyncWrap(require("./slugRedirect.js")));
 
 // Mount the 404 and 500 error handling middleware last
 app.use(_404);
