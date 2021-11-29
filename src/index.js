@@ -16,6 +16,12 @@ app.get("/", (req, res) => res.status(200).send("ZCA URL Shortener"));
 
 app.get("/:slug", asyncWrap(require("./slugRedirect.js")));
 
+app.use(
+  "/admin/mappings",
+  require("./adminOnlyMiddleware"),
+  require("./admin.js")
+);
+
 // Mount the 404 and 500 error handling middleware last
 app.use(_404);
 app.use(_500);

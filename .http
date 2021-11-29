@@ -1,9 +1,8 @@
 # Global file variable definitions
 @hostname = http://localhost
 @host = {{hostname}}:8080
-
-# Variable to test creating a new mapping and deleting it
-@testingSlug = testing123
+@firebaseAuthApiKey = AIzaSyCXVTgYvNpQD1RMmb5RI4i_yCRh90xQEq4
+@authHeader = Authorization: Bearer {{getAuth.response.body.idToken}}
 
 ### Base URL and health probe
 GET {{host}}/
@@ -16,9 +15,14 @@ GET {{host}}/invalid-slug-test
 
 ### Get all mappings
 GET {{host}}/admin/mappings/all
+{{authHeader}}
+
+# Variable to test creating a new mapping and deleting it
+@testingSlug = testing123
 
 ### Create new mapping
 POST {{host}}/admin/mappings/new
+{{authHeader}}
 content-type: application/json
 
 {
@@ -28,3 +32,4 @@ content-type: application/json
 
 ### Delete mapping
 POST {{host}}/admin/mappings/delete/{{testingSlug}}
+{{authHeader}}
