@@ -1,0 +1,22 @@
+{
+  "name": "url-shortener-app",
+  "version": "0.0.0",
+  "scripts": {
+    "deploy-firebase-hosting": "firebase deploy --only hosting",
+    "deploy": "npm run build && npm run deploy-firebase-hosting",
+    "serve": "vite --port 8080",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "bulma": "^0.9.3",
+    "firebase": "^9.5.0",
+    "simpler-fetch": "^2.2.0",
+    "vue": "^3.2.16",
+    "vue-router": "^4.0.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.3",
+    "vite": "^2.6.4"
+  }
+}

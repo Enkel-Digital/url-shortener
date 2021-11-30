@@ -1,6 +1,6 @@
 # Global file variable definitions
 @hostname = http://localhost
-@host = {{hostname}}:8080
+@host = {{hostname}}:3000
 @firebaseAuthApiKey = AIzaSyCXVTgYvNpQD1RMmb5RI4i_yCRh90xQEq4
 @authHeader = Authorization: Bearer {{getAuth.response.body.idToken}}
 

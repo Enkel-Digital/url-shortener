@@ -7,7 +7,7 @@ const app = express();
 const { asyncWrap, _404, _500 } = require("express-error-middlewares");
 
 // Allow zca domains for production use and localhost for development
-// app.use(require("cors")({ origin: [/zca\.com$/, /localhost/] }));
+app.use(require("cors")({ origin: [/zca\.sg$/, /localhost/] }));
 
 // middleware to add http headers
 app.use(require("helmet")());
@@ -29,5 +29,5 @@ app.use(_500);
 /**
  * @notice Setup PORT last to ensure all setup is done before server starts listening to traffic
  */
-const port = process.env.PORT || 8080; // Defaults to PORT 8080
+const port = process.env.PORT || 3000; // Defaults to PORT 3000
 app.listen(port, () => console.log(`Server running on port: ${port}`));

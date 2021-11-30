@@ -29,7 +29,7 @@ RUN npm install
 COPY ./src/ ./src/
 
 # Define exposed ports, acting only as documentation. You STILL need to map the ports with -p option with docker run
-EXPOSE 8080
+EXPOSE 3000
 
 # ENTRYPOINT Command ensures this command runs when the container is spun up, and cannot be overwritten with shell arguements like CMD
 # Using exec form instead of shell form
