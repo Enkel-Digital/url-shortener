@@ -29,8 +29,8 @@
       <div class="column is-full">
         <div class="box">
           <div class="box" v-for="(mapping, i) in mappings" :key="i">
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-multiline is-vcentered">
+              <div class="column is-full">
                 Slug: <b>{{ mapping.slug }}</b>
                 <br />
 
@@ -41,12 +41,28 @@
                 <br />
               </div>
 
-              <div class="column is-narrow">
+              <div class="column is-one-third">
                 <button
-                  class="button is-light is-danger"
+                  class="button is-light is-danger is-fullwidth"
                   @click="deleteMapping(mapping.slug, i)"
                 >
                   delete
+                </button>
+              </div>
+              <div class="column is-one-third">
+                <button
+                  class="button is-light is-warning is-fullwidth"
+                  @click="shareLink(mapping.slug)"
+                >
+                  share
+                </button>
+              </div>
+              <div class="column is-one-third">
+                <button
+                  class="button is-light is-success is-fullwidth"
+                  @click="copyLink(mapping.slug)"
+                >
+                  copy
                 </button>
               </div>
             </div>
@@ -98,6 +114,25 @@ export default {
         return confirm(`Failed to get mappings\nTry again?`) && this.login();
 
       this.mappings = res.mappings;
+    },
+
+    shareLink(slug) {
+      // Ensure navigator.share is available first, quit if not available
+      if (!navigator.share) return alert("Web Share not supported on device");
+
+      // Start the share UI, but not awaiting for it, as platforms resolve this at different timings
+      navigator.share({
+        // Default webshare options
+        title: "Share link",
+        text: "Share this shortened link",
+        url: `https://short.enkeldigital.com/${slug}`,
+      });
+    },
+
+    async copyLink(slug) {
+      navigator.clipboard
+        .writeText(`https://short.enkeldigital.com/${slug}`)
+        .then(() => alert("Copied"));
     },
 
     async deleteMapping(slug, mappingIndex) {
