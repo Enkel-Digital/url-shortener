@@ -2,7 +2,7 @@
   <div class="px-5 py-5">
     <div class="columns is-multiline is-vcentered">
       <div class="column">
-        <p class="subtitle">Mappings</p>
+        <p class="title">Mappings</p>
       </div>
 
       <div class="column is-narrow">
@@ -27,44 +27,44 @@
       </div>
 
       <div class="column is-full">
-        <div class="box">
-          <div class="box" v-for="(mapping, i) in mappings" :key="i">
-            <div class="columns is-multiline is-vcentered">
-              <div class="column is-full">
-                Slug: <b>{{ mapping.slug }}</b>
-                <br />
+        <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
-                URL: <b>{{ mapping.url }}</b>
-                <br />
+        <div class="box" v-for="(mapping, i) in mappings" :key="i">
+          <div class="columns is-multiline is-vcentered">
+            <div class="column is-full">
+              Slug: <b>{{ mapping.slug }}</b>
+              <br />
 
-                {{ formatTimeslot(mapping.createdAt * 1000) }}
-                <br />
-              </div>
+              URL: <b>{{ mapping.url }}</b>
+              <br />
 
-              <div class="column is-one-third">
-                <button
-                  class="button is-light is-danger is-fullwidth"
-                  @click="deleteMapping(mapping.slug, i)"
-                >
-                  delete
-                </button>
-              </div>
-              <div class="column is-one-third">
-                <button
-                  class="button is-light is-warning is-fullwidth"
-                  @click="shareLink(mapping.slug)"
-                >
-                  share
-                </button>
-              </div>
-              <div class="column is-one-third">
-                <button
-                  class="button is-light is-success is-fullwidth"
-                  @click="copyLink(mapping.slug)"
-                >
-                  copy
-                </button>
-              </div>
+              {{ formatTimeslot(mapping.createdAt * 1000) }}
+              <br />
+            </div>
+
+            <div class="column is-one-third">
+              <button
+                class="button is-light is-danger is-fullwidth"
+                @click="deleteMapping(mapping.slug, i)"
+              >
+                delete
+              </button>
+            </div>
+            <div class="column is-one-third">
+              <button
+                class="button is-light is-warning is-fullwidth"
+                @click="shareLink(mapping.slug)"
+              >
+                share
+              </button>
+            </div>
+            <div class="column is-one-third">
+              <button
+                class="button is-light is-success is-fullwidth"
+                @click="copyLink(mapping.slug)"
+              >
+                copy
+              </button>
             </div>
           </div>
         </div>

@@ -1,14 +1,18 @@
 <template>
   <div class="px-5 py-5">
-    <div class="columns is-multiline">
+    <div class="columns is-multiline is-vcentered">
       <div class="column">
-        <p class="subtitle">Create</p>
+        <p class="title">Create</p>
       </div>
 
       <div class="column is-narrow">
         <router-link class="button is-light is-success" :to="{ name: 'view' }">
           Back
         </router-link>
+      </div>
+
+      <div class="column is-full">
+        <p class="subtitle">*All URLs are CASE SENSITIVE</p>
       </div>
 
       <div class="column is-full">
