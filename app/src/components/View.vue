@@ -38,6 +38,9 @@
               URL: <b>{{ mapping.url }}</b>
               <br />
 
+              By: {{ mapping.createdBy }}
+              <br />
+
               {{ formatTimeslot(mapping.createdAt * 1000) }}
               <br />
             </div>
