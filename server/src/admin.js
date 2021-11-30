@@ -51,7 +51,11 @@ router.post(
       .firestore()
       .collection("map")
       .doc(req.body.slug)
-      .set({ url: req.body.url, createdAt: require("unixseconds")() })
+      .set({
+        url: req.body.url,
+        createdAt: require("unixseconds")(),
+        createdBy: req.authenticatedUser.email,
+      })
       .then(() => res.status(201).json({}))
   )
 );
