@@ -39,6 +39,16 @@
       </div>
 
       <div class="column is-full">
+        <input type="checkbox" id="permanentCheckbox" v-model="permanent" />
+        <label for="permanentCheckbox">
+          Permanent Redirect?
+          <br />
+
+          *NOTE Hard to change later as browser will not call API again.
+        </label>
+      </div>
+
+      <div class="column is-full">
         <button class="button is-light is-success is-fullwidth" @click="create">
           create
         </button>
@@ -58,6 +68,7 @@ export default {
     return {
       slug: undefined,
       url: undefined,
+      permanent: false,
     };
   },
 
@@ -66,7 +77,7 @@ export default {
       const res = await oof
         .POST("/admin/mappings/new")
         .header(await getAuthHeader())
-        .data({ slug: this.slug, url: this.url })
+        .data({ slug: this.slug, url: this.url, permanent: this.permanent })
         .runJSON();
 
       // If the API call failed, recursively call itself again if user wants to retry,

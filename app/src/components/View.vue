@@ -41,6 +41,9 @@
               By: {{ mapping.createdBy }}
               <br />
 
+              Type: {{ mapping.status === 301 ? "Permanent" : "Temporary" }}
+              <br />
+
               {{ formatTimeslot(mapping.createdAt * 1000) }}
               <br />
             </div>

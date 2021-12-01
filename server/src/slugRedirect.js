@@ -14,9 +14,9 @@ module.exports = async (req, res) => {
     .get();
   if (!snapshot.exists) return res.status(404).send("Error: Invalid URL Slug");
 
-  const { url } = snapshot.data();
+  const { status, url } = snapshot.data();
   if (!url)
     return res.status(500).send("Internal Error: Missing URL Slug in document");
 
-  res.redirect(url);
+  res.redirect(status, url);
 };

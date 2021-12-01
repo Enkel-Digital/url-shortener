@@ -53,6 +53,7 @@ router.post(
       .doc(req.body.slug)
       .set({
         url: req.body.url,
+        status: req.body.permanent ? 301 : 302,
         createdAt: require("unixseconds")(),
         createdBy: req.authenticatedUser.email,
       })
