@@ -12,7 +12,16 @@ app.use(require("cors")({ origin: [/zca\.sg$/, /localhost/] }));
 // middleware to add http headers
 app.use(require("helmet")());
 
-app.get("/", (req, res) => res.status(200).send("ZCA URL Shortener"));
+// Health probe to check if server is up without running any other logic
+app.get("/health", (req, res) => res.status(200).send("ZCA URL Shortener"));
+
+// Depending on whether a root redirect URL is provided, mount a different root API handler
+// Navigating to the base URL will either be a 301 redirect to the root company domain
+// Or a simple message to let user know what is this domain for
+if (process.env.root_redirect)
+  // Using 301 permanent redirect to ensure browsers cache this to prevent invoking server repeatedly to save cost
+  app.get("/", (req, res) => res.redirect(301, process.env.root_redirect));
+else app.get("/", (req, res) => res.status(200).send("URL Shortener"));
 
 app.get("/:slug", asyncWrap(require("./slugRedirect.js")));
 
