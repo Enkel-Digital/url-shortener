@@ -33,6 +33,7 @@
 
         <div class="box" v-for="(mapping, i) in mappings" :key="i">
           <div class="columns is-multiline is-vcentered">
+            <!-- @todo Might show less details here and route to another page on click to view more details -->
             <div class="column is-full">
               Slug: <b>{{ mapping.slug }}</b>
               <br />
@@ -40,13 +41,19 @@
               URL: <b>{{ mapping.url }}</b>
               <br />
 
+              Type:
+              <span class="has-text-danger" v-if="mapping.status === 301">
+                Permanent
+              </span>
+              <span class="has-text-success" v-else-if="mapping.status === 302">
+                Temporary
+              </span>
+              <br />
+
               Used: <b>{{ mapping.used }}</b> time(s)
               <br />
 
               By: {{ mapping.createdBy }}
-              <br />
-
-              Type: {{ mapping.status === 301 ? "Permanent" : "Temporary" }}
               <br />
 
               {{ formatTimeslot(mapping.createdAt * 1000) }}
