@@ -19,4 +19,14 @@ module.exports = async (req, res) => {
     return res.status(500).send("Internal Error: Missing URL Slug in document");
 
   res.redirect(status, url);
+
+  // Only track the API call after responding to the client to reduce client call latency
+  // No need to await here as it is a fire and forget type
+  require("@enkeldigital/firebase-admin")
+    .firestore()
+    .collection("map")
+    .doc(slug)
+    .update({
+      used: require("firebase-admin").firestore.FieldValue.increment(1),
+    });
 };

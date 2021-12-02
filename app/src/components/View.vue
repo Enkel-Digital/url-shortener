@@ -40,6 +40,9 @@
               URL: <b>{{ mapping.url }}</b>
               <br />
 
+              Used: <b>{{ mapping.used }}</b> time(s)
+              <br />
+
               By: {{ mapping.createdBy }}
               <br />
 

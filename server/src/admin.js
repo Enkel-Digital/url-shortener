@@ -57,6 +57,7 @@ router.post(
         status: req.body.permanent ? 301 : 302,
         createdAt: require("unixseconds")(),
         createdBy: req.authenticatedUser.email,
+        used: 0,
       })
       .then(() => res.status(201).json({}))
   )
