@@ -29,6 +29,8 @@
       <div class="column is-full">
         <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
+        <p>Sort By: <b>Newest first</b></p>
+
         <div class="box" v-for="(mapping, i) in mappings" :key="i">
           <div class="columns is-multiline is-vcentered">
             <div class="column is-full">

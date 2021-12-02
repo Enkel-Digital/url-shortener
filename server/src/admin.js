@@ -17,6 +17,7 @@ router.get(
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
+      .orderBy("createdAt", "desc")
       .get()
       .then((snap) => snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() })))
       .then((mappings) => res.status(200).json({ mappings }))
