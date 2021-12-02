@@ -24,6 +24,11 @@
           style="width: 100%"
           required
         />
+        <br />
+
+        <span v-if="slug">
+          Preview: {{ baseURL }}<b>{{ slug }}</b>
+        </span>
       </div>
 
       <div class="column is-full">
@@ -69,6 +74,7 @@ export default {
       slug: undefined,
       url: undefined,
       permanent: false,
+      baseURL: import.meta.env.VITE_baseURL,
     };
   },
 

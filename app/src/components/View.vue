@@ -93,7 +93,10 @@ export default {
   },
 
   data() {
-    return { mappings: [] };
+    return {
+      mappings: [],
+      baseURL: import.meta.env.VITE_baseURL,
+    };
   },
 
   methods: {
@@ -133,13 +136,13 @@ export default {
         // Default webshare options
         title: "Share link",
         text: "Share this shortened link",
-        url: `https://short.enkeldigital.com/${slug}`,
+        url: `${this.baseURL}${slug}`,
       });
     },
 
     async copyLink(slug) {
       navigator.clipboard
-        .writeText(`https://short.enkeldigital.com/${slug}`)
+        .writeText(`${this.baseURL}${slug}`)
         .then(() => alert("Copied"));
     },
 
