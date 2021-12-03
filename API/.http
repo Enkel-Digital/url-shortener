@@ -4,14 +4,19 @@
 @firebaseAuthApiKey = AIzaSyCXVTgYvNpQD1RMmb5RI4i_yCRh90xQEq4
 @authHeader = Authorization: Bearer {{getAuth.response.body.idToken}}
 
+### Get auth credentials
+# @name getAuth
+POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{firebaseAuthApiKey}}
+content-type: application/json
+
+{
+    "email": "admin@enkeldigital.com",
+    "password": "llllll",
+    "returnSecureToken": true,
+}
+
 ### Base URL and health probe
 GET {{host}}/
-
-### Test valid slug
-GET {{host}}/slug-test
-
-### Test invalid slug
-GET {{host}}/invalid-slug-test
 
 ### Get all mappings
 GET {{host}}/admin/mappings/all

@@ -1,6 +1,6 @@
 # To build and run the image from this Dockerfile, where x is the name of the worker node's JS file name
-# docker build -t zca-url -f ./.Dockerfile .
-# docker run -d --rm --name zca-url zca-url
+# docker build -t redirect -f ./.Dockerfile .
+# docker run -d --rm --name redirect redirect
 # Alternativly, use docker compose in root to run this service
 # 
 # Why the server needs to be built first before the image is built:

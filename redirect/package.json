@@ -1,11 +1,11 @@
 {
-  "name": "url-shortener-server",
+  "name": "url-shortener-redirect",
   "version": "0.0.1",
-  "description": "",
+  "description": "Main redirect server",
   "main": "./src/index.js",
   "scripts": {
-    "docker:build": "docker build -t gcr.io/zca-url-shortener/zca-url -f ./.Dockerfile .",
-    "docker:push": "docker push gcr.io/zca-url-shortener/zca-url",
+    "docker:build": "docker build -t gcr.io/zca-url-shortener/redirect -f ./.Dockerfile .",
+    "docker:push": "docker push gcr.io/zca-url-shortener/redirect",
     "deploy": "npm run docker:build && npm run docker:push",
     "start": "node ./src/index.js",
     "serve": "npx nodemon ./src/index.js"
@@ -27,9 +27,7 @@
     "express": "^4.17.1",
     "express-error-middlewares": "^1.0.0",
     "firebase-admin": "^9.12.0",
-    "firebase-auth-express-middleware": "^0.2.1",
-    "helmet": "^4.6.0",
-    "unixseconds": "^0.1.0"
+    "helmet": "^4.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

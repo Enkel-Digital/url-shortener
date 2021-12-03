@@ -19,7 +19,7 @@ router.get(
       .collection("map")
       .orderBy("createdAt", "desc")
       .get()
-      .then((snap) => snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() })))
+      .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
       .then((mappings) => res.status(200).json({ mappings }))
   )
 );
@@ -71,7 +71,7 @@ router.post(
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
-      .doc(req.params.slug)
+      .doc(slug)
       .delete()
       .then(() => res.status(200).json({}));
   })

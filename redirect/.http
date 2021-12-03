@@ -1,0 +1,15 @@
+# Global file variable definitions
+@hostname = http://localhost
+@host = {{hostname}}:3000
+
+### Base URL
+GET {{host}}/
+
+### Health probe
+GET {{host}}/health
+
+### Test valid slug
+GET {{host}}/slug-test
+
+### Test invalid slug
+GET {{host}}/invalid-slug-test
