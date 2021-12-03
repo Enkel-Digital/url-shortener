@@ -66,6 +66,16 @@
 import { oof } from "simpler-fetch";
 import { getAuthHeader } from "../firebase.js";
 
+/** Ensures it is both a valid URL and a valid HTTP protocol based URL */
+function isInvalidURL(string) {
+  try {
+    const url = new URL(string);
+    return !(url.protocol === "http:" || url.protocol === "https:");
+  } catch {
+    return true;
+  }
+}
+
 export default {
   name: "Create",
 
@@ -79,7 +89,25 @@ export default {
   },
 
   methods: {
+    /**
+     * Checks and validates the form's inputs, if there is any issue, user will be alerted here
+     * @returns {Boolean} returns true after validating all inputs
+     */
+    inputValidated() {
+      if (!this.slug) return alert("Missing slug");
+      if (!this.url) return alert("Missing URL");
+      if (isInvalidURL(this.url))
+        return alert(
+          "Invalid 'url' must be a proper full URL with http/https protocol"
+        );
+
+      return true;
+    },
+
     async create() {
+      // Ensure all inputs are valid before calling API
+      if (!this.inputValidated()) return;
+
       const res = await oof
         .POST("/admin/mappings/new")
         .header(await getAuthHeader())
