@@ -14,6 +14,7 @@ oof.baseUrl(
 );
 
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import router from "./router.js";
 import App from "./App.vue";
 
@@ -30,7 +31,7 @@ const unsubscribe = onAuthStateChanged(auth, () => {
   // Prevent app initialization from running more than once
   if (!app)
     // Create new vue app
-    app = createApp(App).use(router).mount("#app");
+    app = createApp(App).use(createPinia()).use(router).mount("#app");
 
   // Use the firebase.Unsubscribe function returned from adding auth state change listner to unsubscribe
   // To prevent new Vue from running more than once
