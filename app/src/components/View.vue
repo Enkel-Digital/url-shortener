@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5 py-5">
+  <div>
     <div class="columns is-multiline is-vcentered">
       <div class="column">
         <p class="title">Mappings</p>

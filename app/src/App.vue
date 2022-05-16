@@ -3,15 +3,11 @@
 </script>
 
 <template>
-  <div>
+  <div class="container px-5 py-5" style="max-width: 50em">
     <!-- Conditionally show the loader based on the shared global loading flag -->
     <!-- <Loader v-if="$store.state.loading" /> -->
 
-    <router-view
-      class="container"
-      style="max-width: 46em"
-      v-slot="{ Component }"
-    >
+    <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
       </keep-alive>

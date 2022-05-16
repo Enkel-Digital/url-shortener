@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5 py-5">
+  <div>
     <div class="columns is-multiline">
       <div class="column">
         <label><b>URL Shortener Admin Portal</b></label>
