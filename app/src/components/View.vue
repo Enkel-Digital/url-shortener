@@ -38,7 +38,8 @@
               Slug: <b>{{ mapping.slug }}</b>
               <br />
 
-              URL: <b>{{ mapping.url }}</b>
+              <!-- Wrap the URL if needed as it is usually very long -->
+              URL: <b style="word-wrap: break-word">{{ mapping.url }}</b>
               <br />
 
               Type:
@@ -60,15 +61,15 @@
               <br />
             </div>
 
-            <div class="column is-one-third">
+            <div class="column is-narrow">
               <button
                 class="button is-light is-danger is-fullwidth"
-                @click="deleteMapping(mapping.slug, i)"
+                @click="deleteMapping(mapping.id, i)"
               >
                 delete
               </button>
             </div>
-            <div class="column is-one-third">
+            <div class="column i">
               <button
                 class="button is-light is-warning is-fullwidth"
                 @click="shareLink(mapping.slug)"
@@ -76,7 +77,7 @@
                 share
               </button>
             </div>
-            <div class="column is-one-third">
+            <div class="column">
               <button
                 class="button is-light is-success is-fullwidth"
                 @click="copyLink(mapping.slug)"
