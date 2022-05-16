@@ -1,11 +1,23 @@
 <script setup>
-// import Loader from "./components/Loader.vue";
+import { useStore } from "./store/index";
+const store = useStore();
 </script>
 
 <template>
   <div class="container px-5 py-5" style="max-width: 50em">
     <!-- Conditionally show the loader based on the shared global loading flag -->
     <!-- <Loader v-if="$store.state.loading" /> -->
+
+    <div
+      v-if="store.notif"
+      class="notification is-primary is-light"
+      style="position: sticky; top: 1em; z-index: 10"
+    >
+      <button class="delete" @click="store.clearNotif"></button>
+
+      <!-- @todo Allow HTML content? -->
+      {{ store.notifContent }}
+    </div>
 
     <router-view v-slot="{ Component }">
       <keep-alive>

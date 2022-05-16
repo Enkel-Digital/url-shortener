@@ -93,6 +93,9 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import { useStore } from "../store/index";
+
 import { oof } from "simpler-fetch";
 import { auth, getAuthHeader } from "../firebase.js";
 
@@ -113,6 +116,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(useStore, ["showNotif"]),
+
     /*
       For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly
       console.log(new Date().toLocaleDateString("default", { dateStyle: "full", timeStyle: "short" }));
@@ -156,7 +161,7 @@ export default {
     async copyLink(slug) {
       navigator.clipboard
         .writeText(`${this.baseURL}${slug}`)
-        .then(() => alert("Copied"));
+        .then(() => this.showNotif("URL Copied!"));
     },
 
     async deleteMapping(slug, mappingIndex) {
