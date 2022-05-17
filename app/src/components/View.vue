@@ -173,7 +173,7 @@ export default {
       // If the API call failed, recursively call itself again if user wants to retry,
       // And always make sure that this method call ends right here by putting it in a return expression
       if (!res.ok)
-        return confirm(`Failed to delete mapping\nTry again?`) && this.login();
+        return confirm(`Deletion failed\nTry again?`) && this.deleteMapping();
 
       this.mappings.splice(mappingIndex, 1);
     },
