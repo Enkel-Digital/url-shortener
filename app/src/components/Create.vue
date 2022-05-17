@@ -44,8 +44,25 @@
       </div>
 
       <div class="column is-full">
-        <input type="checkbox" id="permanentCheckbox" v-model="permanent" />
-        <label for="permanentCheckbox">
+        <label class="checkbox" for="expiryCheckbox">
+          <input v-model="expiry" type="checkbox" id="expiryCheckbox" />
+          Set auto expiry time
+          <br />
+        </label>
+
+        <div v-if="expiry">
+          <input
+            type="datetime-local"
+            class="input"
+            v-model="expiryTime"
+            :min="currentDatetime"
+          />
+        </div>
+      </div>
+
+      <div class="column is-full">
+        <label class="checkbox" for="permanentCheckbox">
+          <input v-model="permanent" type="checkbox" id="permanentCheckbox" />
           Permanent Redirect?
           <br />
 
@@ -66,6 +83,12 @@
 import { oof } from "simpler-fetch";
 import { getAuthHeader } from "../firebase.js";
 
+// Generate current date time used as the default date time value
+// Formatted for input tag of 'datetime-local' type
+const now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+const currentDatetime = now.toISOString().slice(0, 16);
+
 /** Ensures it is both a valid URL and a valid HTTP protocol based URL */
 function isInvalidURL(string) {
   try {
@@ -85,6 +108,11 @@ export default {
       url: undefined,
       permanent: false,
       baseURL: import.meta.env.VITE_baseURL,
+
+      currentDatetime,
+
+      expiryTime: currentDatetime,
+      expiry: undefined,
     };
   },
 
