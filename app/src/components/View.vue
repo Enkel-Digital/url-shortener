@@ -161,7 +161,7 @@ export default {
     async copyLink(slug) {
       navigator.clipboard
         .writeText(`${this.baseURL}${slug}`)
-        .then(() => this.showNotif("URL Copied!"));
+        .then(() => this.showNotif(`Copied: ${this.baseURL}<b>${slug}</b>`));
     },
 
     async deleteMapping(slug, mappingIndex) {

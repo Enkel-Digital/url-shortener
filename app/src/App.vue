@@ -11,12 +11,18 @@ const store = useStore();
     <div
       v-if="store.notif"
       class="notification is-primary is-light"
-      style="position: sticky; top: 1em; z-index: 10"
+      style="
+        position: sticky;
+        top: 1em;
+        z-index: 10;
+        box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 0.4);
+      "
     >
       <button class="delete" @click="store.clearNotif"></button>
 
-      <!-- @todo Allow HTML content? -->
-      {{ store.notifContent }}
+      <!-- Allow HTML content to be shown -->
+      <!-- Word wrap CSS added to deal with unusually long slugs on small screens -->
+      <span v-html="store.notifContent" style="word-wrap: break-word" />
     </div>
 
     <router-view v-slot="{ Component }">
