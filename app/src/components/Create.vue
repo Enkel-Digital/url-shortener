@@ -16,14 +16,18 @@
       </div>
 
       <div class="column is-full">
-        <input
-          type="text"
-          v-model="slug"
-          placeholder="Slug"
-          class="input mb-4"
-          style="width: 100%"
-          required
-        />
+        <label>
+          Slug
+
+          <input
+            type="text"
+            v-model="slug"
+            placeholder="Slug"
+            class="input mb-4"
+            style="width: 100%"
+            required
+          />
+        </label>
         <br />
 
         <span v-if="slug">
@@ -32,21 +36,56 @@
       </div>
 
       <div class="column is-full">
-        <input
-          type="text"
-          v-model="url"
-          placeholder="URL"
-          @keypress.enter="create"
-          class="input mb-4"
-          style="width: 100%"
-          required
-        />
+        <label>
+          Redirect to this URL
+
+          <input
+            type="text"
+            v-model="url"
+            placeholder="URL"
+            @keypress.enter="create"
+            class="input mb-4"
+            style="width: 100%"
+            required
+          />
+        </label>
       </div>
 
       <div class="column is-full">
+        <label class="checkbox" for="permanentCheckbox">
+          <input v-model="permanent" type="checkbox" id="permanentCheckbox" />
+          Permanent Redirect?
+        </label>
+
+        <!-- Show warning if user selects permanent redirect-->
+        <div v-if="permanent" class="content box">
+          <ul>
+            <li>
+              Note that this will be hard to change later as browser will not
+              call API again.
+            </li>
+            <li>
+              It will still redirect even after you delete the mapping if the
+              browser caches this response long enough.
+            </li>
+            <li>
+              This will also be cheaper as the API is only called once and not
+              many times even as users go there again. Only charged for number
+              of times the API server runs, so since it is only run on first
+              call, charges once only.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- @todo Add a field on date of starting validity -->
+
+      <!-- @todo if user checks permanent checkbox, then this should be cache control date -->
+      <div class="column is-full">
         <label class="checkbox" for="expiryCheckbox">
           <input v-model="expiry" type="checkbox" id="expiryCheckbox" />
-          Set auto expiry time
+          Set auto expiry time (<b>never expires by default</b> until you delete
+          the mapping)
           <br />
         </label>
 
@@ -58,16 +97,6 @@
             :min="currentDatetime"
           />
         </div>
-      </div>
-
-      <div class="column is-full">
-        <label class="checkbox" for="permanentCheckbox">
-          <input v-model="permanent" type="checkbox" id="permanentCheckbox" />
-          Permanent Redirect?
-          <br />
-
-          *NOTE Hard to change later as browser will not call API again.
-        </label>
       </div>
 
       <div class="column is-full">
