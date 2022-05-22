@@ -26,7 +26,22 @@
         </router-link>
       </div>
 
-      <div class="column is-full">
+      <div v-if="mappings.length === 0" class="column is-full">
+        <div class="box">
+          <p class="subtitle">
+            There are no mappings found, click to create your first mapping now!
+          </p>
+
+          <router-link
+            class="button is-large is-light is-success is-fullwidth"
+            :to="{ name: 'create' }"
+          >
+            Create
+          </router-link>
+        </div>
+      </div>
+
+      <div v-else class="column is-full">
         <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
         <p>Sort By: <b>Newest first</b></p>
