@@ -109,6 +109,9 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import { useStore } from "../store/index";
+
 import { oof } from "simpler-fetch";
 import { getAuthHeader } from "../firebase.js";
 
@@ -146,6 +149,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(useStore, ["showNotif"]),
+
     /**
      * Checks and validates the form's inputs, if there is any issue, user will be alerted here
      * @returns {Boolean} returns true after validating all inputs
@@ -176,12 +181,15 @@ export default {
       if (!res.ok)
         return confirm(`${res.error}\n\nTry again?`) && this.create();
 
-      alert("Mapping created!");
+      this.showNotif("Mapping created!");
+
+      // Redirect back to view page once mapping is created
+      this.$router.push({ name: "view" });
 
       // Reset the data values to its original state by re-running the data method
       // https://github.com/vuejs/vue/issues/702#issuecomment-308991548
       // https://www.carlcassar.com/articles/reset-data-in-a-vue-component
-      Object.assign(this.$data, this.$options.data());
+      // Object.assign(this.$data, this.$options.data());
     },
   },
 };
