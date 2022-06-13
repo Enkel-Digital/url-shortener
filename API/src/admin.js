@@ -17,6 +17,7 @@ router.get(
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
+      .where("host", "==", req.hostname)
       .orderBy("createdAt", "desc")
       .get()
       .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
@@ -30,6 +31,8 @@ router.post(
   express.json(),
 
   // Middleware to ensure slug/url is available and URL is validated
+  // @todo Check for missing host
+  // @todo Ensure that slug is unique for that domain
   (req, res, next) => {
     if (!req.body.slug)
       res
@@ -48,11 +51,14 @@ router.post(
   },
 
   asyncWrap(async (req, res) =>
+    // @todo Check to ensure that the slug for that particular domain is not already taken
+    // @todo Can refactor out the get request and just call that function again?
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
-      .doc(req.body.slug)
-      .set({
+      .add({
+        host: req.hostname,
+        slug: req.body.slug,
         url: req.body.url,
         status: req.body.permanent ? 301 : 302,
         createdAt: require("unixseconds")(),
@@ -66,12 +72,12 @@ router.post(
 // API to delete a mapping
 // POST RPC instead of using DEL method to avoid cors pre-flight request
 router.post(
-  "/delete/:slug",
+  "/delete/:mappingID",
   asyncWrap(async (req, res) => {
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
-      .doc(slug)
+      .doc(req.params.mappingID)
       .delete()
       .then(() => res.status(200).json({}));
   })
