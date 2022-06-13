@@ -149,13 +149,15 @@ export default {
     async loadMappings() {
       const res = await oof
         .GET("/admin/mappings/all")
-        .header(await getAuthHeader())
+        .header(getAuthHeader)
         .runJSON();
 
       // If the API call failed, recursively call itself again if user wants to retry,
       // And always make sure that this method call ends right here by putting it in a return expression
       if (!res.ok)
-        return confirm(`Failed to get mappings\nTry again?`) && this.login();
+        return (
+          confirm(`Failed to get mappings\nTry again?`) && this.loadMappings()
+        );
 
       this.mappings = res.mappings;
     },

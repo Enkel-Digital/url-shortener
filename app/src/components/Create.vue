@@ -167,7 +167,7 @@ export default {
 
       const res = await oof
         .POST("/admin/mappings/new")
-        .header(await getAuthHeader())
+        .header(getAuthHeader)
         .data({ slug: this.slug, url: this.url, permanent: this.permanent })
         .runJSON();
 
