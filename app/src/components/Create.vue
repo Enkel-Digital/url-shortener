@@ -110,7 +110,7 @@
 
 <script>
 import { mapActions } from "pinia";
-import { useStore } from "../store/index";
+import { useNotif } from "../store/notif";
 
 import { oof } from "simpler-fetch";
 import { getAuthHeader } from "../firebase.js";
@@ -149,7 +149,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useStore, ["showNotif"]),
+    ...mapActions(useNotif, ["showNotif"]),
 
     /**
      * Checks and validates the form's inputs, if there is any issue, user will be alerted here

@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
 
-// useStore could be anything like useUser, useCart
-// the first argument is a unique id of the store across your application
-export const useStore = defineStore("main", {
+export const useNotif = defineStore("notif", {
   // arrow function recommended for full type inference
   state: () => ({
     notif: false,

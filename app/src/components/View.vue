@@ -109,7 +109,7 @@
 
 <script>
 import { mapActions } from "pinia";
-import { useStore } from "../store/index";
+import { useNotif } from "../store/notif";
 
 import { oof } from "simpler-fetch";
 import { auth, getAuthHeader } from "../firebase.js";
@@ -131,7 +131,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useStore, ["showNotif"]),
+    ...mapActions(useNotif, ["showNotif"]),
 
     /*
       For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly

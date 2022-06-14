@@ -1,6 +1,6 @@
 <script setup>
-import { useStore } from "./store/index";
-const store = useStore();
+import { useNotif } from "./store/notif";
+const notif = useNotif();
 </script>
 
 <template>
@@ -9,7 +9,7 @@ const store = useStore();
     <!-- <Loader v-if="$store.state.loading" /> -->
 
     <div
-      v-if="store.notif"
+      v-if="notif.notif"
       class="notification is-primary is-light"
       style="
         position: sticky;
@@ -18,11 +18,11 @@ const store = useStore();
         box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 0.4);
       "
     >
-      <button class="delete" @click="store.clearNotif"></button>
+      <button class="delete" @click="notif.clearNotif"></button>
 
       <!-- Allow HTML content to be shown -->
       <!-- Word wrap CSS added to deal with unusually long slugs on small screens -->
-      <span v-html="store.notifContent" style="word-wrap: break-word" />
+      <span v-html="notif.notifContent" style="word-wrap: break-word" />
     </div>
 
     <router-view v-slot="{ Component }">
