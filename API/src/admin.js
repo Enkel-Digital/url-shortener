@@ -50,9 +50,20 @@ router.post(
     else next();
   },
 
-  asyncWrap(async (req, res) =>
-    // @todo Check to ensure that the slug for that particular domain is not already taken
-    // @todo Can refactor out the get request and just call that function again?
+  asyncWrap(async (req, res) => {
+    // Check to ensure that the slug for that particular domain is not already taken
+    const doc = await require("@enkeldigital/firebase-admin")
+      .firestore()
+      .collection("map")
+      // Filter by slug first as it will narrow the results down much faster first compared to host
+      // As a slug will probably be more unique than a hostname
+      .where("slug", "==", req.body.slug)
+      .where("host", "==", req.hostname)
+      .get()
+      .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0]));
+    if (doc !== undefined)
+      res.status(400).json({ error: "Slug is already used!" });
+
     require("@enkeldigital/firebase-admin")
       .firestore()
       .collection("map")
@@ -65,8 +76,8 @@ router.post(
         createdBy: req.authenticatedUser.email,
         used: 0,
       })
-      .then(() => res.status(201).json({}))
-  )
+      .then(() => res.status(201).json({}));
+  })
 );
 
 // API to delete a mapping
