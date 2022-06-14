@@ -4,6 +4,7 @@ require("dotenv").config();
 // setup app
 const app = require("express")();
 const { asyncWrap, _404, _500 } = require("express-error-middlewares");
+const fbAdmin = require("@enkeldigital/firebase-admin");
 
 app
   // Use * wildcard for CORS as all domains will be relying on the same server
@@ -27,7 +28,7 @@ app.get(
     const slug = getSlug(req.path).slice(1);
 
     // Get mapping from firestore and returns document snapshot if found
-    const snapshot = await require("@enkeldigital/firebase-admin")
+    const snapshot = await fbAdmin
       .firestore()
       .collection("map")
       // Filter by slug first as it will narrow the results down much faster first compared to host
@@ -52,7 +53,7 @@ app.get(
     // Only track the API call after responding to the client to reduce client call latency
     // No need to await here as it is a fire and forget type
     // @todo Here it is updating it in the map collection, but we still need to update again in the usage ...
-    require("@enkeldigital/firebase-admin")
+    fbAdmin
       .firestore()
       .collection("map")
       .doc(snapshot.id)
