@@ -6,20 +6,23 @@
       </div>
 
       <div class="column is-narrow">
-        <button class="button is-light is-danger" @click="logout">
+        <button class="button is-light is-danger is-fullwidth" @click="logout">
           logout
         </button>
       </div>
 
       <div class="column is-narrow">
-        <button class="button is-light is-warning" @click="loadMappings">
+        <button
+          class="button is-light is-warning is-fullwidth"
+          @click="loadMappings"
+        >
           Refresh
         </button>
       </div>
 
       <div class="column is-narrow">
         <router-link
-          class="button is-light is-success"
+          class="button is-light is-success is-fullwidth"
           :to="{ name: 'create' }"
         >
           Create
