@@ -25,11 +25,7 @@ const notif = useNotif();
       <span v-html="notif.notifContent" style="word-wrap: break-word" />
     </div>
 
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
+    <router-view />
   </div>
 </template>
 

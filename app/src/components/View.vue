@@ -117,9 +117,8 @@ import { auth } from "../firebase.js";
 export default {
   name: "View",
 
-  // Activated hook so that mappings will be reloaded everytime this component is activated under the keep-alive wrapping
-  // So that users do not need to manually hit refresh when they go from create mapping view to view mapping
-  activated() {
+  // Mappings will be loaded everytime so that users don't need to hit refresh manually
+  created() {
     this.loadMappings();
   },
 
