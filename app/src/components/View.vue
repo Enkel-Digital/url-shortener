@@ -108,11 +108,11 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
+import { mapState, mapActions } from "pinia";
 import { useNotif } from "../store/notif";
+import { useStore } from "../store/index";
 
-import { oof } from "simpler-fetch";
-import { auth, getAuthHeader } from "../firebase.js";
+import { auth } from "../firebase.js";
 
 export default {
   name: "View",
@@ -125,13 +125,15 @@ export default {
 
   data() {
     return {
-      mappings: [],
       baseURL: import.meta.env.VITE_baseURL,
     };
   },
 
+  computed: mapState(useStore, ["mappings"]),
+
   methods: {
     ...mapActions(useNotif, ["showNotif"]),
+    ...mapActions(useStore, ["loadMappings", "deleteMapping"]),
 
     /*
       For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly
@@ -145,22 +147,6 @@ export default {
         dateStyle: "full",
         timeStyle: "short",
       }).format(new Date(timeslot)),
-
-    async loadMappings() {
-      const res = await oof
-        .GET("/admin/mappings/all")
-        .header(getAuthHeader)
-        .runJSON();
-
-      // If the API call failed, recursively call itself again if user wants to retry,
-      // And always make sure that this method call ends right here by putting it in a return expression
-      if (!res.ok)
-        return (
-          confirm(`Failed to get mappings\nTry again?`) && this.loadMappings()
-        );
-
-      this.mappings = res.mappings;
-    },
 
     shareLink(slug) {
       // Ensure navigator.share is available first, quit if not available
@@ -179,20 +165,6 @@ export default {
       navigator.clipboard
         .writeText(`${this.baseURL}${slug}`)
         .then(() => this.showNotif(`Copied: ${this.baseURL}<b>${slug}</b>`));
-    },
-
-    async deleteMapping(slug, mappingIndex) {
-      const res = await oof
-        .POST(`/admin/mappings/delete/${slug}`)
-        .header(await getAuthHeader())
-        .runJSON();
-
-      // If the API call failed, recursively call itself again if user wants to retry,
-      // And always make sure that this method call ends right here by putting it in a return expression
-      if (!res.ok)
-        return confirm(`Deletion failed\nTry again?`) && this.deleteMapping();
-
-      this.mappings.splice(mappingIndex, 1);
     },
 
     async logout() {

@@ -111,25 +111,13 @@
 <script>
 import { mapActions } from "pinia";
 import { useNotif } from "../store/notif";
-
-import { oof } from "simpler-fetch";
-import { getAuthHeader } from "../firebase.js";
+import { useStore } from "../store/index";
 
 // Generate current date time used as the default date time value
 // Formatted for input tag of 'datetime-local' type
 const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 const currentDatetime = now.toISOString().slice(0, 16);
-
-/** Ensures it is both a valid URL and a valid HTTP protocol based URL */
-function isInvalidURL(string) {
-  try {
-    const url = new URL(string);
-    return !(url.protocol === "http:" || url.protocol === "https:");
-  } catch {
-    return true;
-  }
-}
 
 export default {
   name: "Create",
@@ -150,36 +138,18 @@ export default {
 
   methods: {
     ...mapActions(useNotif, ["showNotif"]),
-
-    /**
-     * Checks and validates the form's inputs, if there is any issue, user will be alerted here
-     * @returns {Boolean} returns true after validating all inputs
-     */
-    inputValidated() {
-      if (!this.slug) return alert("Missing slug");
-      if (!this.url) return alert("Missing URL");
-      if (isInvalidURL(this.url))
-        return alert(
-          "Invalid 'url' must be a proper full URL with http/https protocol"
-        );
-
-      return true;
-    },
+    ...mapActions(useStore, ["createMapping"]),
 
     async create() {
-      // Ensure all inputs are valid before calling API
-      if (!this.inputValidated()) return;
+      // @todo Add expiry time
+      const success = await this.createMapping({
+        slug: this.slug,
+        url: this.url,
+        permanent: this.permanent,
+      });
 
-      const res = await oof
-        .POST("/admin/mappings/new")
-        .header(getAuthHeader)
-        .data({ slug: this.slug, url: this.url, permanent: this.permanent })
-        .runJSON();
-
-      // If the API call failed, recursively call itself again if user wants to retry,
-      // And always make sure that this method call ends right here by putting it in a return expression
-      if (!res.ok)
-        return confirm(`${res.error}\n\nTry again?`) && this.create();
+      // Make sure that this method call ends right here by putting it in a return expression
+      if (!success) return confirm("Try again?") && this.create();
 
       this.showNotif("Mapping created!");
 
