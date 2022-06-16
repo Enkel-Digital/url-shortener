@@ -9,12 +9,14 @@
 const express = require("express");
 const router = express.Router();
 const { asyncWrap } = require("express-error-middlewares");
+const fbAdmin = require("@enkeldigital/firebase-admin");
+const unixseconds = require("unixseconds");
 
 // API to get all mappings
 router.get(
   "/all",
   asyncWrap(async (req, res) =>
-    require("@enkeldigital/firebase-admin")
+    fbAdmin
       .firestore()
       .collection("map")
       .where("host", "==", req.hostname)
@@ -52,7 +54,7 @@ router.post(
 
   asyncWrap(async (req, res) => {
     // Check to ensure that the slug for that particular domain is not already taken
-    const doc = await require("@enkeldigital/firebase-admin")
+    const doc = await fbAdmin
       .firestore()
       .collection("map")
       // Filter by slug first as it will narrow the results down much faster first compared to host
@@ -64,7 +66,7 @@ router.post(
     if (doc !== undefined)
       res.status(400).json({ error: "Slug is already used!" });
 
-    require("@enkeldigital/firebase-admin")
+    fbAdmin
       .firestore()
       .collection("map")
       .add({
@@ -72,7 +74,7 @@ router.post(
         slug: req.body.slug,
         url: req.body.url,
         status: req.body.permanent ? 301 : 302,
-        createdAt: require("unixseconds")(),
+        createdAt: unixseconds(),
         createdBy: req.authenticatedUser.email,
         used: 0,
       })
@@ -85,7 +87,7 @@ router.post(
 router.post(
   "/delete/:mappingID",
   asyncWrap(async (req, res) => {
-    require("@enkeldigital/firebase-admin")
+    fbAdmin
       .firestore()
       .collection("map")
       .doc(req.params.mappingID)
