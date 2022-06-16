@@ -58,6 +58,13 @@ const router = createRouter({
       meta: { Auth_requirements: AuthType.private },
     },
 
+    {
+      path: "/settings",
+      name: "settings",
+      component: () => import("./components/Settings.vue"),
+      meta: { Auth_requirements: AuthType.private },
+    },
+
     // @todo Add a 404 not found
   ],
 });
