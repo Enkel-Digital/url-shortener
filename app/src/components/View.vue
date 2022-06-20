@@ -59,8 +59,14 @@
         </router-link>
       </div>
 
-      <!-- @todo Change the original value to undefined so we know that it is still loading or smth? Then if still loading dont show this -->
-      <div v-if="mappings.length === 0" class="column is-full">
+      <!-- Original value is undefined so we know that it is still loading -->
+      <div v-if="mappings === undefined" class="column is-full">
+        <div class="box">
+          <p class="subtitle">Loading...</p>
+        </div>
+      </div>
+
+      <div v-else-if="mappings.length === 0" class="column is-full">
         <div class="box">
           <p class="subtitle">
             There are no mappings found, click to create your first mapping now!

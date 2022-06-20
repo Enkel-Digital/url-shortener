@@ -11,7 +11,8 @@ export const useStore = defineStore("main", {
   // arrow function recommended for full type inference
   state: () => ({
     // @todo Convert this into an object instead and add a getter to convert and sort as array
-    mappings: [],
+    // Starts as undefined so that the UI can treat it as not loaded yet and show a different UI.
+    mappings: undefined,
   }),
 
   actions: {
