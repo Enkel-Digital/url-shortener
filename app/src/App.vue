@@ -4,25 +4,39 @@ const notif = useNotif();
 </script>
 
 <template>
-  <div class="container px-5 py-5" style="max-width: 50em">
+  <div class="container py-5" style="max-width: 50em">
     <!-- Conditionally show the loader based on the shared global loading flag -->
     <!-- <Loader v-if="$store.state.loading" /> -->
 
+    <!-- @todo Allow caller to set color -->
+    <!--
+      Use a fixed position and apply overlay style so that the notification will
+      not take up space on the normal plane and push everything else down.
+
+      Max width like the top level container to match the width
+    -->
     <div
       v-if="notif.notif"
-      class="notification is-primary is-light"
       style="
-        position: sticky;
-        top: 1em;
-        z-index: 10;
-        box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 0.4);
+        max-width: 50em;
+
+        position: fixed;
+        top: 1rem;
+        z-index: 100;
+        width: 100%;
       "
     >
-      <button class="delete" @click="notif.clearNotif"></button>
+      <!-- Only apply the box shadow to the notification bar itself -->
+      <div
+        class="notification is-primary is-light"
+        style="box-shadow: 0 0.3rem 1rem rgb(0 0 0 / 0.4)"
+      >
+        <button class="delete" @click="notif.clearNotif"></button>
 
-      <!-- Allow HTML content to be shown -->
-      <!-- Word wrap CSS added to deal with unusually long slugs on small screens -->
-      <span v-html="notif.notifContent" style="word-wrap: break-word" />
+        <!-- Allow HTML content to be shown -->
+        <!-- Word wrap CSS added to deal with unusually long slugs on small screens -->
+        <span v-html="notif.notifContent" style="word-wrap: break-word" />
+      </div>
     </div>
 
     <router-view />
