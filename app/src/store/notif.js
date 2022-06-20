@@ -5,6 +5,7 @@ export const useNotif = defineStore("notif", {
   state: () => ({
     notif: false,
     notifContent: "",
+    notifColor: "primary",
     autoCloseTimeout: undefined,
   }),
 
@@ -18,11 +19,12 @@ export const useNotif = defineStore("notif", {
       }
     },
 
-    showNotif(notifContent, timeout = 3000) {
+    showNotif(notifContent, { color = "primary", timeout = 3000 } = {}) {
       this.clearTimeoutIfAny();
 
       this.notif = true;
       this.notifContent = notifContent;
+      this.notifColor = color;
 
       // Auto close notif banner after timeout
       this.autoCloseTimeout = setTimeout(() => (this.notif = false), timeout);
