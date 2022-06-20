@@ -3,8 +3,6 @@ import { defineStore } from "pinia";
 import { oof } from "simpler-fetch";
 import { getAuthHeader } from "../firebase.js";
 
-import isInvalidURL from "../utils/isInvalidURL.js";
-
 // useStore could be anything like useUser, useCart
 // the first argument is a unique id of the store across your application
 export const useStore = defineStore("main", {
@@ -49,15 +47,6 @@ export const useStore = defineStore("main", {
     },
 
     async createMapping(mapping) {
-      // @todo Change all of this to use global notif banner
-      // if (!this.slug) return alert("Missing slug");
-      if (!this.url) return alert("Missing URL");
-      if (isInvalidURL(this.url))
-        return alert("URL must be a full URL with http/https protocol");
-
-      // @todo Add regex check prevent things like "/something" so that there is no extra / at the begin
-      // @todo Check to ensure that the slug for that particular domain is not already taken
-
       const res = await oof
         .POST("/admin/mappings/new")
         .header(getAuthHeader)

@@ -113,6 +113,8 @@ import { mapActions } from "pinia";
 import { useNotif } from "../store/notif";
 import { useStore } from "../store/index";
 
+import isInvalidURL from "../utils/isInvalidURL.js";
+
 // Generate current date time used as the default date time value
 // Formatted for input tag of 'datetime-local' type
 const now = new Date();
@@ -124,7 +126,7 @@ export default {
 
   data() {
     return {
-      slug: undefined,
+      slug: "",
       url: undefined,
       permanent: false,
       baseURL: import.meta.env.VITE_baseURL,
@@ -141,6 +143,22 @@ export default {
     ...mapActions(useStore, ["createMapping"]),
 
     async create() {
+      if (!this.slug)
+        return this.showNotif("Missing slug", { color: "danger" });
+
+      if (!this.url) return this.showNotif("Missing URL", { color: "danger" });
+
+      if (isInvalidURL(this.url))
+        return this.showNotif(
+          "URL must be a full URL with http/https protocol",
+          { color: "danger" }
+        );
+
+      // @todo Add regex check prevent things like "/something" so that there is no extra / at the begin
+
+      // @todo Check to ensure that the slug for that particular domain is not already taken
+      // @todo This check could possibly be done on frontend if we have all the mappings, but backend still needs to double check
+
       // @todo Add expiry time
       const success = await this.createMapping({
         slug: this.slug,
