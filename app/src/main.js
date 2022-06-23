@@ -9,7 +9,7 @@ import { oof } from "simpler-fetch";
 // Set baseUrl before using in actions
 oof.baseUrl(
   process.env.NODE_ENV === "production"
-    ? "https://short.enkeldigital.com"
+    ? "https://api.short.enkeldigital.com"
     : "http://localhost:3000"
 );
 

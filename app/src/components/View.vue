@@ -164,7 +164,7 @@ export default {
 
   data() {
     return {
-      baseURL: import.meta.env.VITE_baseURL,
+      baseURL: useStore().settings.baseURL,
     };
   },
 

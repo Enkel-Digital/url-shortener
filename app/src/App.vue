@@ -8,7 +8,6 @@ const notif = useNotif();
     <!-- Conditionally show the loader based on the shared global loading flag -->
     <!-- <Loader v-if="$store.state.loading" /> -->
 
-    <!-- @todo Allow caller to set color -->
     <!--
       Use a fixed position and apply overlay style so that the notification will
       not take up space on the normal plane and push everything else down.
