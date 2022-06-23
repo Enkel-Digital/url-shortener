@@ -128,8 +128,8 @@ export default {
     return {
       slug: "",
       url: undefined,
-      permanent: false,
-      baseURL: import.meta.env.VITE_baseURL,
+      permanent: useStore().settings.permanent,
+      baseURL: useStore().settings.baseURL,
 
       currentDatetime,
 
@@ -171,8 +171,9 @@ export default {
 
       this.showNotif("Mapping created!");
 
-      // Redirect back to view page once mapping is created
-      this.$router.push({ name: "view" });
+      // If user set so, redirect back to view page once mapping is created
+      if (useStore().settings.redirectBackToHome)
+        this.$router.push({ name: "view" });
 
       // Reset the data values to its original state by re-running the data method
       // https://github.com/vuejs/vue/issues/702#issuecomment-308991548
