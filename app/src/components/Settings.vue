@@ -59,14 +59,31 @@
         </div>
       </div>
 
+      <!-- @todo Change checkboxes to use a slider or something nicer? -->
       <div class="column is-full">
         <div class="box">
-          <p class="subtitle">Select permanent redirect by default?</p>
+          <p class="subtitle">Others</p>
 
-          <label class="checkbox">
-            <span class="mr-3">By default?</span>
-            <input v-model="mainStore.settings.permanent" type="checkbox" />
-          </label>
+          <div class="mx-3">
+            <label class="checkbox">
+              <input v-model="mainStore.settings.permanent" type="checkbox" />
+              Select permanent redirect by default?
+            </label>
+          </div>
+
+          <div class="mx-3">
+            <hr />
+          </div>
+
+          <div class="mx-3">
+            <label class="checkbox">
+              <input
+                v-model="mainStore.settings.redirectBackToHome"
+                type="checkbox"
+              />
+              Redirect back to Home view after creating new mapping?
+            </label>
+          </div>
         </div>
       </div>
     </div>
