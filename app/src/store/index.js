@@ -8,6 +8,13 @@ import { getAuthHeader } from "../firebase.js";
 export const useStore = defineStore("main", {
   // arrow function recommended for full type inference
   state: () => ({
+    settings: {
+      url: undefined,
+      permanent: false,
+      redirectBackToHome: true,
+      baseURL: import.meta.env.VITE_baseURL,
+    },
+
     // @todo Convert this into an object instead and add a getter to convert and sort as array
     // Starts as undefined so that the UI can treat it as not loaded yet and show a different UI.
     mappings: undefined,

@@ -13,7 +13,7 @@
 
       <div class="column is-full">
         <div class="box">
-          Base URL: <b>{{ baseURL }}</b>
+          Base URL: <b>{{ mainStore.settings.baseURL }}</b>
         </div>
       </div>
 
@@ -23,7 +23,12 @@
           <label>
             <b>From</b>
 
-            <input type="text" v-model="baseURL" class="input" disabled />
+            <input
+              type="text"
+              v-model="mainStore.settings.baseURL"
+              class="input"
+              disabled
+            />
           </label>
 
           <br />
@@ -58,51 +63,42 @@
         <div class="box">
           <p class="subtitle">Select permanent redirect by default?</p>
 
-          <!-- @todo Change to use a slider or something -->
           <label class="checkbox">
             <span class="mr-3">By default?</span>
-            <input v-model="permanent" type="checkbox" />
+            <input v-model="mainStore.settings.permanent" type="checkbox" />
           </label>
         </div>
-      </div>
-
-      <div class="column is-full">
-        <button
-          class="button is-light is-fullwidth"
-          :class="{ 'is-success': true }"
-          :disabled="true"
-          @click="update"
-        >
-          Update Settings
-        </button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { mapActions } from "pinia";
+<script setup>
+import { ref, watch } from "vue";
+
 import { useNotif } from "../store/notif";
 import { useStore } from "../store/index";
 
-export default {
-  name: "Settings",
+import isInvalidURL from "../utils/isInvalidURL.js";
 
-  data() {
-    return {
-      url: undefined,
-      permanent: false,
+const mainStore = useStore();
+const showNotif = useNotif().showNotif;
 
-      baseURL: import.meta.env.VITE_baseURL,
-    };
-  },
+let url = ref(useStore().settings.url);
 
-  methods: {
-    ...mapActions(useNotif, ["showNotif"]),
+// The settings state is writable through the UI directly,
+// any changes to the settings state will trigger a notification.
+watch(mainStore.settings, () => showNotif("Settings updated!"));
 
-    async update() {
-      this.showNotif("Settings updated!");
-    },
-  },
-};
+async function update() {
+  if (isInvalidURL(url.value))
+    return showNotif("URL must be a full URL with http/https protocol", {
+      color: "danger",
+    });
+
+  // @todo Call the API to set the root redirect
+
+  // Set the URL once the URL has been validated
+  mainStore.settings.url = url;
+}
 </script>
