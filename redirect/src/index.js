@@ -41,9 +41,30 @@ app
         .get()
         .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0]));
 
-      // @todo Redirect to a statically hosted not found page instead!
-      if (!doc) return res.status(404).send("Error: Invalid link");
+      // If the mapping is not found, either show a preconfigured 404 page or a generic 404 page
+      if (!doc) {
+        // Get 404 mapping from firestore and returns document if found
+        const notFoundDoc = await fbAdmin
+          .firestore()
+          .collection("map")
+          // Filter by slug first as it will narrow the results down much faster first compared to host
+          // As the number of __404__ slugs will probably be more than the average number of mappings per host
+          .where("slug", "==", "__404__")
+          .where("host", "==", req.hostname)
+          .get()
+          .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0]));
 
+        // If there is one set by the admin, respond with a temporary redirect to the provided not found page
+        // Temporary redirect only as the admin might add the slug later on, and we do not want client to cache the 404
+        //
+        // @todo Redirect to a statically hosted not found page instead if the user did not set any 404 page
+        return notFoundDoc
+          ? res.redirect(302, notFoundDoc.data().url)
+          : res.status(404).send("Error: Invalid link");
+      }
+
+      // @todo Redirect to a statically hosted error page instead, and trigger alert to developer
+      // @todo Prevent the developer alert from turning into a ddos attack where alerts are spammed
       const { status, url } = doc.data();
       if (!url)
         return res
