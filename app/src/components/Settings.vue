@@ -41,16 +41,19 @@
               <div class="control is-expanded">
                 <input
                   type="url"
-                  v-model="url"
+                  v-model="rootRedirectURL"
                   placeholder="https://example.com"
                   class="input"
                   pattern="https://.*|http://.*"
-                  @keypress.enter="update"
+                  @keypress.enter="updateRootRedirectURL"
                   required
                 />
               </div>
               <div class="control">
-                <button class="button is-success" @click="update">
+                <button
+                  class="button is-success"
+                  @click="updateRootRedirectURL"
+                >
                   Update
                 </button>
               </div>
@@ -90,6 +93,42 @@
         </div>
       </div>
 
+      <div class="column is-full">
+        <div class="box">
+          <p class="subtitle mb-1">Not Found (404) redirect</p>
+          All invalid URLs will be redirected here. If this is blank, users will
+          see a generic invalid URL error page.
+          <br />
+          <br />
+
+          <label>
+            <b>To</b> (enter full URL with http/https)
+
+            <div class="field has-addons">
+              <div class="control is-expanded">
+                <input
+                  type="url"
+                  v-model="notFoundRedirectURL"
+                  placeholder="https://example.com"
+                  class="input"
+                  pattern="https://.*|http://.*"
+                  @keypress.enter="updateNotFoundRedirectURL"
+                  required
+                />
+              </div>
+              <div class="control">
+                <button
+                  class="button is-success"
+                  @click="updateNotFoundRedirectURL"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <!-- @todo Change checkboxes to use a slider or something nicer? -->
       <div class="column is-full">
         <div class="box">
@@ -97,7 +136,10 @@
 
           <div class="mx-3">
             <label class="checkbox">
-              <input v-model="mainStore.settings.permanent" type="checkbox" />
+              <input
+                v-model="mainStore.settings.defaultToPermanentRedirects"
+                type="checkbox"
+              />
               Select permanent redirect by default?
             </label>
           </div>
@@ -132,20 +174,34 @@ import isInvalidURL from "../utils/isInvalidURL.js";
 const mainStore = useStore();
 const showNotif = useNotif().showNotif;
 
-let url = ref(useStore().settings.url);
-let permanent = ref(false);
-
 // The settings state is writable through the UI directly,
 // any changes to the settings state will trigger a notification.
 watch(mainStore.settings, () => showNotif("Settings updated!"));
 
-async function update() {
-  if (isInvalidURL(url.value))
+let rootRedirectURL = ref(useStore().settings.rootRedirectURL);
+let notFoundRedirectURL = ref(useStore().settings.notFoundRedirectURL);
+let permanent = ref(false);
+
+async function updateRootRedirectURL() {
+  if (isInvalidURL(rootRedirectURL.value))
     return showNotif("URL must be a full URL with http/https protocol", {
       color: "danger",
     });
 
   // Call the API to set the root redirect
-  mainStore.createRootMapping({ url: url.value, permanent: permanent.value });
+  mainStore.setRootMapping({
+    url: rootRedirectURL.value,
+    permanent: permanent.value,
+  });
+}
+
+async function updateNotFoundRedirectURL() {
+  if (isInvalidURL(notFoundRedirectURL.value))
+    return showNotif("URL must be a full URL with http/https protocol", {
+      color: "danger",
+    });
+
+  // Call the API to set the not found redirect
+  mainStore.setNotFoundMapping({ url: notFoundRedirectURL.value });
 }
 </script>

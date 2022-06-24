@@ -128,7 +128,7 @@ export default {
     return {
       slug: "",
       url: undefined,
-      permanent: useStore().settings.permanent,
+      permanent: useStore().settings.defaultToPermanentRedirects,
       baseURL: useStore().settings.baseURL,
 
       currentDatetime,

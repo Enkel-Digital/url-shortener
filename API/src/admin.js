@@ -140,6 +140,63 @@ router.post(
   })
 );
 
+// API to update mapping for not found URL redirects
+router.post(
+  "/404",
+  express.json(),
+
+  (req, res, next) => {
+    if (!req.body.url)
+      res
+        .status(400)
+        .json({ error: "Missing 'url' property in request body." });
+    else if (require("./isInvalidURL.js")(req.body.url))
+      res.status(400).json({
+        error:
+          "Invalid 'url' property in request body, must be a proper full URL with http/https protocol",
+      });
+    else next();
+  },
+
+  asyncWrap(async (req, res) => {
+    const redirectDoc = {
+      // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
+      host: req.hostname,
+
+      // Specially reserved slug for storing the not found mapping
+      slug: "__404__",
+      url: req.body.url,
+      status: 302,
+      createdAt: unixseconds(),
+      createdBy: req.authenticatedUser.email,
+      used: 0,
+    };
+
+    // Check if slug for that particular domain is set already,
+    // Override if set, else create a new document.
+    await fbAdmin
+      .firestore()
+      .collection("map")
+      // Filter by slug first as it will narrow the results down much faster first compared to host
+      // As a slug will probably be more unique than a hostname.
+      // Not found redirect means that the slug is the specially reserved one
+      .where("slug", "==", "__404__")
+      .where("host", "==", req.hostname)
+      .get()
+      .then((snapshot) =>
+        snapshot.empty
+          ? fbAdmin.firestore().collection("map").add(redirectDoc)
+          : fbAdmin
+              .firestore()
+              .collection("map")
+              .doc(snapshot.docs[0].id)
+              .set(redirectDoc)
+      );
+
+    res.status(201).json({});
+  })
+);
+
 // API to delete a mapping
 // POST RPC instead of using DEL method to avoid cors pre-flight request
 router.post(

@@ -9,8 +9,9 @@ export const useStore = defineStore("main", {
   // arrow function recommended for full type inference
   state: () => ({
     settings: {
-      url: undefined,
-      permanent: false,
+      rootRedirectURL: undefined,
+      notFoundRedirectURL: undefined,
+      defaultToPermanentRedirects: false,
       redirectBackToHome: true,
       baseURL: import.meta.env.VITE_baseURL,
     },
@@ -69,7 +70,7 @@ export const useStore = defineStore("main", {
       return true;
     },
 
-    async createRootMapping(mapping) {
+    async setRootMapping(mapping) {
       const res = await oof
         .POST("/admin/mappings/root")
         .header(getAuthHeader)
@@ -78,7 +79,19 @@ export const useStore = defineStore("main", {
 
       if (!res.ok) return alert(res.error);
 
-      this.settings.url = mapping.url;
+      this.settings.rootRedirectURL = mapping.url;
+    },
+
+    async setNotFoundMapping(mapping) {
+      const res = await oof
+        .POST("/admin/mappings/404")
+        .header(getAuthHeader)
+        .data(mapping)
+        .runJSON();
+
+      if (!res.ok) return alert(res.error);
+
+      this.settings.notFoundRedirectURL = mapping.url;
     },
   },
 
