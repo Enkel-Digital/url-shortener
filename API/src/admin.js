@@ -70,6 +70,7 @@ router.post(
       .firestore()
       .collection("map")
       .add({
+        // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
         host: req.hostname,
         slug: req.body.slug,
         url: req.body.url,
@@ -79,6 +80,63 @@ router.post(
         used: 0,
       })
       .then(() => res.status(201).json({}));
+  })
+);
+
+// API to update the mapping for root URL redirect
+router.post(
+  "/root",
+  express.json(),
+
+  (req, res, next) => {
+    if (!req.body.url)
+      res
+        .status(400)
+        .json({ error: "Missing 'url' property in request body." });
+    else if (require("./isInvalidURL.js")(req.body.url))
+      res.status(400).json({
+        error:
+          "Invalid 'url' property in request body, must be a proper full URL with http/https protocol",
+      });
+    else next();
+  },
+
+  asyncWrap(async (req, res) => {
+    const redirectDoc = {
+      // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
+      host: req.hostname,
+
+      // Root redirect means that the slug should be an empty string
+      slug: "",
+      url: req.body.url,
+      status: req.body.permanent ? 301 : 302,
+      createdAt: unixseconds(),
+      createdBy: req.authenticatedUser.email,
+      used: 0,
+    };
+
+    // Check if slug for that particular domain is set already,
+    // Override if set, else create a new document.
+    await fbAdmin
+      .firestore()
+      .collection("map")
+      // Filter by slug first as it will narrow the results down much faster first compared to host
+      // As a slug will probably be more unique than a hostname.
+      // Root redirect means that the slug should be an empty string
+      .where("slug", "==", "")
+      .where("host", "==", req.hostname)
+      .get()
+      .then((snapshot) =>
+        snapshot.empty
+          ? fbAdmin.firestore().collection("map").add(redirectDoc)
+          : fbAdmin
+              .firestore()
+              .collection("map")
+              .doc(snapshot.docs[0].id)
+              .set(redirectDoc)
+      );
+
+    res.status(201).json({});
   })
 );
 
