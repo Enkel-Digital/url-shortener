@@ -56,6 +56,37 @@
               </div>
             </div>
           </label>
+
+          <div class="mt-4">
+            <label class="checkbox" for="permanentCheckbox">
+              <input
+                v-model="permanent"
+                type="checkbox"
+                id="permanentCheckbox"
+              />
+              Permanent Redirect?
+            </label>
+
+            <!-- Show warning if user selects permanent redirect-->
+            <div v-if="permanent" class="content box">
+              <ul>
+                <li>
+                  Note that this will be hard to change later as browser will
+                  not call API again.
+                </li>
+                <li>
+                  It will still redirect even after you delete the mapping if
+                  the browser caches this response long enough.
+                </li>
+                <li>
+                  This will also be cheaper as the API is only called once
+                  regardless of how many times users visit the link again,
+                  therefore since it only runs on the first call, only the first
+                  call is charged.
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -102,6 +133,7 @@ const mainStore = useStore();
 const showNotif = useNotif().showNotif;
 
 let url = ref(useStore().settings.url);
+let permanent = ref(false);
 
 // The settings state is writable through the UI directly,
 // any changes to the settings state will trigger a notification.
@@ -113,9 +145,7 @@ async function update() {
       color: "danger",
     });
 
-  // @todo Call the API to set the root redirect
-
-  // Set the URL once the URL has been validated
-  mainStore.settings.url = url;
+  // Call the API to set the root redirect
+  mainStore.createRootMapping({ url: url.value, permanent: permanent.value });
 }
 </script>

@@ -68,6 +68,18 @@ export const useStore = defineStore("main", {
       // Return true so that the UI can be updated accordingly
       return true;
     },
+
+    async createRootMapping(mapping) {
+      const res = await oof
+        .POST("/admin/mappings/root")
+        .header(getAuthHeader)
+        .data(mapping)
+        .runJSON();
+
+      if (!res.ok) return alert(res.error);
+
+      this.settings.url = mapping.url;
+    },
   },
 
   // https://www.npmjs.com/package/pinia-plugin-persistedstate
