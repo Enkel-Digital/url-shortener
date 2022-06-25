@@ -212,6 +212,11 @@ export default {
       // Signout current user
       await auth.signOut();
 
+      // Clear storage medium used for data storage by the "pinia-plugin-persistedstate" plugin
+      // So that data is not left for all to see after logging out,
+      // and when switching accounts on the same browser, data will not be mixed.
+      localStorage.clear();
+
       // Redirect to login view
       this.$router.push({ name: "login" });
     },
