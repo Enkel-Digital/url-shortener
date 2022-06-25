@@ -19,7 +19,7 @@ router.get(
     fbAdmin
       .firestore()
       .collection("map")
-      .where("host", "==", req.hostname)
+      .where("host", "==", req.jwt.host)
       .orderBy("createdAt", "desc")
       .get()
       .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
@@ -60,7 +60,7 @@ router.post(
       // Filter by slug first as it will narrow the results down much faster first compared to host
       // As a slug will probably be more unique than a hostname
       .where("slug", "==", req.body.slug)
-      .where("host", "==", req.hostname)
+      .where("host", "==", req.jwt.host)
       .get()
       .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0]));
     if (doc !== undefined)
@@ -70,8 +70,7 @@ router.post(
       .firestore()
       .collection("map")
       .add({
-        // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
-        host: req.hostname,
+        host: req.jwt.host,
         slug: req.body.slug,
         url: req.body.url,
         status: req.body.permanent ? 301 : 302,
@@ -103,11 +102,9 @@ router.post(
 
   asyncWrap(async (req, res) => {
     const redirectDoc = {
-      // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
-      host: req.hostname,
-
       // Root redirect means that the slug should be an empty string
       slug: "",
+      host: req.jwt.host,
       url: req.body.url,
       status: req.body.permanent ? 301 : 302,
       createdAt: unixseconds(),
@@ -124,7 +121,7 @@ router.post(
       // As a slug will probably be more unique than a hostname.
       // Root redirect means that the slug should be an empty string
       .where("slug", "==", "")
-      .where("host", "==", req.hostname)
+      .where("host", "==", req.jwt.host)
       .get()
       .then((snapshot) =>
         snapshot.empty
@@ -160,11 +157,9 @@ router.post(
 
   asyncWrap(async (req, res) => {
     const redirectDoc = {
-      // @todo Will this still work if we make the other domains do a CNAME to our api.short.ekd.com?
-      host: req.hostname,
-
       // Specially reserved slug for storing the not found mapping
       slug: "__404__",
+      host: req.jwt.host,
       url: req.body.url,
       status: 302,
       createdAt: unixseconds(),
@@ -181,7 +176,7 @@ router.post(
       // As a slug will probably be more unique than a hostname.
       // Not found redirect means that the slug is the specially reserved one
       .where("slug", "==", "__404__")
-      .where("host", "==", req.hostname)
+      .where("host", "==", req.jwt.host)
       .get()
       .then((snapshot) =>
         snapshot.empty
