@@ -40,6 +40,10 @@ router.post(
       res
         .status(400)
         .json({ error: "Missing 'slug' property in request body" });
+    else if (req.body.slug === "__health__" || req.body.slug === "__404__")
+      res
+        .status(400)
+        .json({ error: "'slug' used cannot be a special reserved string" });
     else if (!req.body.url)
       res
         .status(400)
