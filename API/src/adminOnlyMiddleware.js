@@ -14,12 +14,12 @@ module.exports = async function auth(req, res, next) {
       req.headers.authorization &&
       req.headers.authorization.split(" ")[0] === "Bearer"
     ) {
-      req.authenticatedUser = await firebaseAdmin
+      req.jwt = await firebaseAdmin
         .auth()
         .verifyIdToken(req.headers.authorization.split(" ")[1]);
 
       // Only allow request to continue down stream if user is an admin
-      return req.authenticatedUser.admin === true
+      return req.jwt.admin === true
         ? next()
         : res.status(403).json({ error: "UNAUTHORIZED" });
     }

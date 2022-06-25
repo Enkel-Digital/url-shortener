@@ -76,7 +76,7 @@ router.post(
         url: req.body.url,
         status: req.body.permanent ? 301 : 302,
         createdAt: unixseconds(),
-        createdBy: req.authenticatedUser.email,
+        createdBy: req.jwt.email,
         used: 0,
       })
       .then(() => res.status(201).json({}));
@@ -111,7 +111,7 @@ router.post(
       url: req.body.url,
       status: req.body.permanent ? 301 : 302,
       createdAt: unixseconds(),
-      createdBy: req.authenticatedUser.email,
+      createdBy: req.jwt.email,
       used: 0,
     };
 
@@ -168,7 +168,7 @@ router.post(
       url: req.body.url,
       status: 302,
       createdAt: unixseconds(),
-      createdBy: req.authenticatedUser.email,
+      createdBy: req.jwt.email,
       used: 0,
     };
 
