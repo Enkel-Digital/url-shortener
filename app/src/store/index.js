@@ -9,10 +9,13 @@ export const useStore = defineStore("main", {
   // arrow function recommended for full type inference
   state: () => ({
     settings: {
-      rootRedirectURL: undefined,
-      notFoundRedirectURL: undefined,
+      // Mapping objects for the root and not found redirects
+      rootMapping: undefined,
+      notFoundMapping: undefined,
+
       defaultToPermanentRedirects: false,
       redirectBackToHome: true,
+
       baseURL: import.meta.env.VITE_baseURL,
     },
 
@@ -38,6 +41,23 @@ export const useStore = defineStore("main", {
         return (
           confirm(`Failed to get mappings\nTry again?`) && this.loadMappings()
         );
+
+      // Filter out the root and not found redirects and set them seperately
+      const mappingArray = Object.values(res.mappings);
+
+      const rootMapping = mappingArray.find((mapping) => mapping.slug === "");
+      if (rootMapping) {
+        delete res.mappings[rootMapping.id];
+        this.settings.rootMapping = rootMapping;
+      }
+
+      const notFoundMapping = mappingArray.find(
+        (mapping) => mapping.slug === "__404__"
+      );
+      if (notFoundMapping) {
+        delete res.mappings[notFoundMapping.id];
+        this.settings.notFoundMapping = notFoundMapping;
+      }
 
       this._mappings = res.mappings;
     },
@@ -83,7 +103,9 @@ export const useStore = defineStore("main", {
 
       if (!res.ok) return alert(res.error);
 
-      this.settings.rootRedirectURL = mapping.url;
+      // @todo Tmp set the URL directly without updating the whole object
+      // @todo Should update to load the whole mapping back as part of the API call
+      this.settings.rootMapping = { url: mapping.url };
     },
 
     async setNotFoundMapping(mapping) {
@@ -95,7 +117,9 @@ export const useStore = defineStore("main", {
 
       if (!res.ok) return alert(res.error);
 
-      this.settings.notFoundRedirectURL = mapping.url;
+      // @todo Should update to load the whole mapping back as part of the API call
+      // @todo Tmp set the URL directly without updating the whole object
+      this.settings.notFoundMapping = { url: mapping.url };
     },
   },
 

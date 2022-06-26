@@ -178,8 +178,8 @@ const showNotif = useNotif().showNotif;
 // any changes to the settings state will trigger a notification.
 watch(mainStore.settings, () => showNotif("Settings updated!"));
 
-let rootRedirectURL = ref(useStore().settings.rootRedirectURL);
-let notFoundRedirectURL = ref(useStore().settings.notFoundRedirectURL);
+let rootRedirectURL = ref(mainStore.settings.rootMapping?.url);
+let notFoundRedirectURL = ref(mainStore.settings.notFoundMapping?.url);
 let permanent = ref(false);
 
 async function updateRootRedirectURL() {
