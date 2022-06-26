@@ -174,11 +174,11 @@ export default {
       // If user set so, redirect back to view page once mapping is created
       if (useStore().settings.redirectBackToHome)
         this.$router.push({ name: "view" });
-
+      // Else reset the data in this component
       // Reset the data values to its original state by re-running the data method
       // https://github.com/vuejs/vue/issues/702#issuecomment-308991548
       // https://www.carlcassar.com/articles/reset-data-in-a-vue-component
-      // Object.assign(this.$data, this.$options.data());
+      else Object.assign(this.$data, this.$options.data());
     },
   },
 };
