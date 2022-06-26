@@ -119,7 +119,7 @@
             <div class="column is-narrow">
               <button
                 class="button is-light is-danger is-fullwidth"
-                @click="deleteMapping(mapping.id, i)"
+                @click="deleteMapping(mapping.id)"
               >
                 delete
               </button>

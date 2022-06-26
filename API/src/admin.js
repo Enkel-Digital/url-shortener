@@ -22,8 +22,15 @@ router.get(
       .where("host", "==", req.jwt.host)
       .orderBy("createdAt", "desc")
       .get()
-      .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
-      .then((mappings) => res.status(200).json({ mappings }))
+      .then((snap) =>
+        res.status(200).json({
+          // Reduce the array of docs into a single object keyed by the doc ID
+          mappings: snap.docs.reduce(
+            (obj, doc) => ((obj[doc.id] = { id: doc.id, ...doc.data() }), obj),
+            {}
+          ),
+        })
+      )
   )
 );
 

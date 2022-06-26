@@ -16,10 +16,14 @@ export const useStore = defineStore("main", {
       baseURL: import.meta.env.VITE_baseURL,
     },
 
-    // @todo Convert this into an object instead and add a getter to convert and sort as array
-    // Starts as undefined so that the UI can treat it as not loaded yet and show a different UI.
-    mappings: undefined,
+    // Property storing all the raw mappings data as an object, and is only used with a getter to convert and sort as array
+    _mappings: {},
   }),
+
+  getters: {
+    mappings: (state) =>
+      Object.values(state._mappings).sort((a, b) => b.createdAt - a.createdAt),
+  },
 
   actions: {
     async loadMappings() {
@@ -35,10 +39,10 @@ export const useStore = defineStore("main", {
           confirm(`Failed to get mappings\nTry again?`) && this.loadMappings()
         );
 
-      this.mappings = res.mappings;
+      this._mappings = res.mappings;
     },
 
-    async deleteMapping(mappingID, mappingIndex) {
+    async deleteMapping(mappingID) {
       if (!confirm("Delete mapping?")) return;
 
       const res = await oof
@@ -51,7 +55,7 @@ export const useStore = defineStore("main", {
       if (!res.ok)
         return confirm(`Deletion failed\nTry again?`) && this.deleteMapping();
 
-      this.mappings.splice(mappingIndex, 1);
+      delete this._mappings[mappingID];
     },
 
     async createMapping(mapping) {
