@@ -45,13 +45,19 @@
                   placeholder="https://example.com"
                   class="input"
                   pattern="https://.*|http://.*"
-                  @keypress.enter="updateRootRedirectURL"
+                  @keypress.enter="
+                    rootRedirectURL !== mainStore.settings.rootMapping?.url &&
+                      updateRootRedirectURL()
+                  "
                   required
                 />
               </div>
               <div class="control">
                 <button
                   class="button is-success"
+                  :disabled="
+                    rootRedirectURL === mainStore.settings.rootMapping?.url
+                  "
                   @click="updateRootRedirectURL"
                 >
                   Update
@@ -112,13 +118,21 @@
                   placeholder="https://example.com"
                   class="input"
                   pattern="https://.*|http://.*"
-                  @keypress.enter="updateNotFoundRedirectURL"
+                  @keypress.enter="
+                    notFoundRedirectURL !==
+                      mainStore.settings.notFoundMapping?.url &&
+                      updateNotFoundRedirectURL()
+                  "
                   required
                 />
               </div>
               <div class="control">
                 <button
                   class="button is-success"
+                  :disabled="
+                    notFoundRedirectURL ===
+                    mainStore.settings.notFoundMapping?.url
+                  "
                   @click="updateNotFoundRedirectURL"
                 >
                   Update
