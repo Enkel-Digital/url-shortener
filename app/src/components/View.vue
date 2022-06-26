@@ -217,6 +217,9 @@ export default {
       // and when switching accounts on the same browser, data will not be mixed.
       localStorage.clear();
 
+      // Reset all state in the main pinia store so that when switching accounts on the same browser without reload, data will not be mixed.
+      useStore().$reset();
+
       // Redirect to login view
       this.$router.push({ name: "login" });
     },
