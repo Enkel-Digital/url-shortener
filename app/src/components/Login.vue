@@ -42,6 +42,8 @@
 import { auth } from "../firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
+import { useStore } from "../store/index";
+
 export default {
   name: "Login",
 
@@ -67,13 +69,19 @@ export default {
         // Get the JWT from user object
         const token = await user.getIdTokenResult();
 
-        // Check explicitly that isAdmin is Boolean true, as JSON value can be any other truthy primitive too
+        // Check explicitly that the admin claims is set to Boolean true,
+        // as JSON value can be any other truthy primitive too.
         if (token.claims.admin !== true) {
           // Throw new error with pre-defined code to get the right error_msg
           const error = new Error();
           error.code = "user/not-admin";
           throw error;
         }
+
+        // Set the baseURL using the host value on the user's JWT joined with a trailing slash
+        // The trailing slash is needed as all host values do not have trailing slash,
+        // and baseURL will be used to create the host+slug combo for copying to user clipboard.
+        useStore().$state.settings.baseURL = token.claims.host + "/";
 
         // Route to main page, after login
         this.$router.replace({ name: "view" });

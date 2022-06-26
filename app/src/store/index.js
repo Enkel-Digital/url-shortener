@@ -16,7 +16,8 @@ export const useStore = defineStore("main", {
       defaultToPermanentRedirects: false,
       redirectBackToHome: true,
 
-      baseURL: import.meta.env.VITE_baseURL,
+      // The baseURL will be set on login using the host value on the user's JWT
+      baseURL: "",
     },
 
     // Property storing all the raw mappings data as an object, and is only used with a getter to convert and sort as array
