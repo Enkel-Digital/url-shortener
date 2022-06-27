@@ -82,11 +82,33 @@
       </div>
 
       <div v-else class="column is-full">
+        <div class="box">
+          <label>
+            <b>Search (by slug)</b>
+
+            <div class="field has-addons">
+              <div class="control is-expanded">
+                <input
+                  ref="searchField"
+                  type="text"
+                  v-model="search_input"
+                  placeholder="E.g. SlugName"
+                  required
+                  class="input"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="control">
+                <button class="button" @click="clearSearchInput">clear</button>
+              </div>
+            </div>
+          </label>
+        </div>
+
         <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
         <p>Sort By: <b>Newest first</b></p>
-
-        <div class="box" v-for="(mapping, i) in mappings" :key="i">
+        <div class="box" v-for="({ item: mapping }, i) in results" :key="i">
           <div class="columns is-multiline is-vcentered">
             <!-- @todo Might show less details here and route to another page on click to view more details -->
             <div class="column is-full">
@@ -124,7 +146,7 @@
                 delete
               </button>
             </div>
-            <div class="column i">
+            <div class="column">
               <button
                 class="button is-light is-warning is-fullwidth"
                 @click="shareLink(mapping.slug)"
@@ -154,6 +176,8 @@ import { useStore } from "../store/index";
 
 import { auth } from "../firebase.js";
 
+import Fuse from "fuse.js";
+
 export default {
   name: "View",
 
@@ -165,10 +189,39 @@ export default {
   data() {
     return {
       baseURL: useStore().settings.baseURL,
+
+      // Data for search
+      search_input: "",
+      search_options: {
+        keys: ["slug"],
+
+        // When to give up search. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything
+        // Default: 0.6
+        threshold: 0.7,
+      },
     };
   },
 
-  computed: mapState(useStore, ["mappings"]),
+  computed: {
+    ...mapState(useStore, ["mappings"]),
+
+    // Update fuse object when search options is updated
+    fuse() {
+      return new Fuse(this.mappings, this.search_options);
+    },
+
+    // Continously search as user input changes
+    results() {
+      return this.fuse.search(
+        this.search_input,
+
+        // @todo Let user set this limit
+        // Limit max number of returned search results to ensure not too many results are returned (esp for lower spec mobile devices),
+        // especially at the start of the search where alot of results will be matched when only 1 - 4 characters are entered
+        { limit: 12 }
+      );
+    },
+  },
 
   methods: {
     ...mapActions(useNotif, ["showNotif"]),
@@ -198,6 +251,12 @@ export default {
         text: "Share this shortened link",
         url: `${this.baseURL}${slug}`,
       });
+    },
+
+    // Clear the search input box and re-focus on the search field
+    clearSearchInput() {
+      this.search_input = "";
+      this.$refs.searchField.focus();
     },
 
     async copyLink(slug) {
