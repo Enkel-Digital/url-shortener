@@ -108,62 +108,11 @@
         <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
         <p>Sort By: <b>Newest first</b></p>
-        <div class="box" v-for="({ item: mapping }, i) in results" :key="i">
-          <div class="columns is-multiline is-vcentered">
-            <!-- @todo Might show less details here and route to another page on click to view more details -->
-            <div class="column is-full">
-              Slug: <b>{{ mapping.slug }}</b>
-              <br />
-
-              <!-- Wrap the URL if needed as it is usually very long -->
-              URL: <b style="word-wrap: break-word">{{ mapping.url }}</b>
-              <br />
-
-              Type:
-              <span class="has-text-danger" v-if="mapping.status === 301">
-                Permanent
-              </span>
-              <span class="has-text-success" v-else-if="mapping.status === 302">
-                Temporary
-              </span>
-              <br />
-
-              Used: <b>{{ mapping.used }}</b> time(s)
-              <br />
-
-              By: {{ mapping.createdBy }}
-              <br />
-
-              {{ formatTimeslot(mapping.createdAt * 1000) }}
-              <br />
-            </div>
-
-            <div class="column is-narrow">
-              <button
-                class="button is-light is-danger is-fullwidth"
-                @click="deleteMapping(mapping.id)"
-              >
-                delete
-              </button>
-            </div>
-            <div class="column">
-              <button
-                class="button is-light is-warning is-fullwidth"
-                @click="shareLink(mapping.slug)"
-              >
-                share
-              </button>
-            </div>
-            <div class="column">
-              <button
-                class="button is-light is-success is-fullwidth"
-                @click="copyLink(mapping.slug)"
-              >
-                copy
-              </button>
-            </div>
-          </div>
-        </div>
+        <Mapping
+          v-for="({ item: mapping }, i) in results"
+          :key="i"
+          :mapping="mapping"
+        />
       </div>
     </div>
   </div>
@@ -178,8 +127,12 @@ import { auth } from "../firebase.js";
 
 import Fuse from "fuse.js";
 
+import Mapping from "./Mapping.vue";
+
 export default {
   name: "View",
+
+  components: { Mapping },
 
   // Mappings will be loaded everytime so that users don't need to hit refresh manually
   created() {
@@ -196,8 +149,7 @@ export default {
         keys: ["slug"],
 
         // When to give up search. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything
-        // Default: 0.6
-        threshold: 0.7,
+        Default: 0.6,
       },
     };
   },
@@ -225,44 +177,12 @@ export default {
 
   methods: {
     ...mapActions(useNotif, ["showNotif"]),
-    ...mapActions(useStore, ["loadMappings", "deleteMapping"]),
-
-    /*
-      For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly
-      console.log(new Date().toLocaleDateString("default", { dateStyle: "full", timeStyle: "short" }));
-
-      Only longer form works by passing to DateTimeFormat method.
-      console.log(new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'short' }).format(new Date()));
-    */
-    formatTimeslot: (timeslot) =>
-      new Intl.DateTimeFormat("default", {
-        dateStyle: "full",
-        timeStyle: "short",
-      }).format(new Date(timeslot)),
-
-    shareLink(slug) {
-      // Ensure navigator.share is available first, quit if not available
-      if (!navigator.share) return alert("Web Share not supported on device");
-
-      // Start the share UI, but not awaiting for it, as platforms resolve this at different timings
-      navigator.share({
-        // Default webshare options
-        title: "Share link",
-        text: "Share this shortened link",
-        url: `${this.baseURL}${slug}`,
-      });
-    },
+    ...mapActions(useStore, ["loadMappings"]),
 
     // Clear the search input box and re-focus on the search field
     clearSearchInput() {
       this.search_input = "";
       this.$refs.searchField.focus();
-    },
-
-    async copyLink(slug) {
-      navigator.clipboard
-        .writeText(`${this.baseURL}${slug}`)
-        .then(() => this.showNotif(`Copied: ${this.baseURL}<b>${slug}</b>`));
     },
 
     async logout() {
