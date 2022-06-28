@@ -1,5 +1,5 @@
 <template>
-  <div class="columns is-multiline is-vcentered">
+  <div class="box mb-5 py-3 px-3 columns is-multiline is-vcentered">
     <!-- @todo Might show less details here and route to another page on click to view more details -->
     <div class="column is-full">
       Slug: <b>{{ mapping.slug }}</b>

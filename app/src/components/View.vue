@@ -117,7 +117,7 @@
         -->
 
         <!-- Show all mapping if the user leaves the search box empty -->
-        <div class="box" v-if="search_input === ''">
+        <div v-if="search_input === ''">
           <Mapping
             v-for="(mapping, i) in mappings"
             :key="i"
@@ -125,7 +125,7 @@
           />
         </div>
 
-        <div class="box" v-else>
+        <div v-else>
           <Mapping
             v-for="({ item: mapping }, i) in results"
             :key="i"
