@@ -108,11 +108,30 @@
         <p class="subtitle">*All URLs are CASE SENSITIVE.</p>
 
         <p>Sort By: <b>Newest first</b></p>
-        <Mapping
-          v-for="({ item: mapping }, i) in results"
-          :key="i"
-          :mapping="mapping"
-        />
+
+        <!--
+          *Through the use of Mapping component, the code is much more readable and can be easily reused,
+          However, it is alot less efficient compared to writing the code here in the parent component,
+          as for every new Mapping component alot more work needs to do be done now that it is its own
+          component rather than just sharing code/functions inline in the parent component.
+        -->
+
+        <!-- Show all mapping if the user leaves the search box empty -->
+        <div class="box" v-if="search_input === ''">
+          <Mapping
+            v-for="(mapping, i) in mappings"
+            :key="i"
+            :mapping="mapping"
+          />
+        </div>
+
+        <div class="box" v-else>
+          <Mapping
+            v-for="({ item: mapping }, i) in results"
+            :key="i"
+            :mapping="mapping"
+          />
+        </div>
       </div>
     </div>
   </div>
