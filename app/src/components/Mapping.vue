@@ -55,51 +55,42 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from "pinia";
+<script setup>
 import { useNotif } from "../store/notif";
 import { useStore } from "../store/index";
 
-const baseURL = useStore().settings.baseURL;
+defineProps({ mapping: { required: true } });
 
-export default {
-  props: ["mapping"],
+const store = useStore();
+const baseURL = store.settings.baseURL;
+const deleteMapping = store.deleteMapping;
 
-  methods: {
-    ...mapActions(useNotif, ["showNotif"]),
-    ...mapActions(useStore, ["deleteMapping"]),
+// For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly
+// console.log(new Date().toLocaleDateString("default", { dateStyle: "full", timeStyle: "short" }));
+//
+// Only longer form works by passing to DateTimeFormat method.
+// console.log(new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'short' }).format(new Date()));
+const formatTimeslot = (timeslot) =>
+  new Intl.DateTimeFormat("default", {
+    dateStyle: "full",
+    timeStyle: "short",
+  }).format(new Date(timeslot));
 
-    /*
-      For whatever reason, browsers have yet to support the shorter form of passing options to locale formatter directly
-      console.log(new Date().toLocaleDateString("default", { dateStyle: "full", timeStyle: "short" }));
+function shareLink(slug) {
+  // Ensure navigator.share is available first, quit if not available
+  if (!navigator.share) return alert("Web Share not supported on device");
 
-      Only longer form works by passing to DateTimeFormat method.
-      console.log(new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'short' }).format(new Date()));
-    */
-    formatTimeslot: (timeslot) =>
-      new Intl.DateTimeFormat("default", {
-        dateStyle: "full",
-        timeStyle: "short",
-      }).format(new Date(timeslot)),
+  // Start the share UI, but not awaiting for it, as platforms resolve this at different timings
+  navigator.share({
+    // Default webshare options
+    title: "Share link",
+    text: "Share this shortened link",
+    url: `${baseURL}${slug}`,
+  });
+}
 
-    shareLink(slug) {
-      // Ensure navigator.share is available first, quit if not available
-      if (!navigator.share) return alert("Web Share not supported on device");
-
-      // Start the share UI, but not awaiting for it, as platforms resolve this at different timings
-      navigator.share({
-        // Default webshare options
-        title: "Share link",
-        text: "Share this shortened link",
-        url: `${baseURL}${slug}`,
-      });
-    },
-
-    async copyLink(slug) {
-      navigator.clipboard
-        .writeText(`${baseURL}${slug}`)
-        .then(() => this.showNotif(`Copied: ${baseURL}<b>${slug}</b>`));
-    },
-  },
-};
+const copyLink = (slug) =>
+  navigator.clipboard
+    .writeText(`${baseURL}${slug}`)
+    .then(() => useNotif().showNotif(`Copied: ${baseURL}<b>${slug}</b>`));
 </script>
