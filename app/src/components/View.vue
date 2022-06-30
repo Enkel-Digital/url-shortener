@@ -126,6 +126,10 @@
         </div>
 
         <div v-else>
+          <!--
+            Planned to show UI if it is an exact match, however there is a bug with the scoring.
+            https://github.com/krisk/Fuse/issues/481
+          -->
           <Mapping
             v-for="({ item: mapping }, i) in results"
             :key="i"
@@ -168,7 +172,7 @@ export default {
         keys: ["slug"],
 
         // When to give up search. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything
-        Default: 0.6,
+        threshold: 0.5,
       },
     };
   },
