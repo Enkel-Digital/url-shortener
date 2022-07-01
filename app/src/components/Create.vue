@@ -25,12 +25,15 @@
             placeholder="Slug"
             class="input mb-4"
             style="width: 100%"
+            :class="{ 'is-danger': slugTaken }"
             required
           />
         </label>
         <br />
 
-        <span v-if="slug">
+        <p v-if="slugTaken">Slug is already taken, choose something else!</p>
+
+        <span v-else-if="slug">
           Preview: {{ baseURL }}<b>{{ slug }}</b>
         </span>
       </div>
@@ -46,6 +49,7 @@
             @keypress.enter="create"
             class="input mb-4"
             style="width: 100%"
+            :disabled="slugTaken"
             required
           />
         </label>
@@ -100,7 +104,11 @@
       </div>
 
       <div class="column is-full">
-        <button class="button is-light is-success is-fullwidth" @click="create">
+        <button
+          class="button is-light is-success is-fullwidth"
+          @click="create"
+          :disabled="slugTaken"
+        >
           create
         </button>
       </div>
@@ -121,6 +129,10 @@ const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 const currentDatetime = now.toISOString().slice(0, 16);
 
+// Split this out so Object.values is not called on every change to convert the mappings object
+const mappings = Object.values(useStore().mappings);
+const slugTaken = (slug) => mappings.some((mapping) => mapping.slug === slug);
+
 export default {
   name: "Create",
 
@@ -136,6 +148,12 @@ export default {
       expiryTime: currentDatetime,
       expiry: undefined,
     };
+  },
+
+  computed: {
+    slugTaken() {
+      return slugTaken(this.slug);
+    },
   },
 
   methods: {
