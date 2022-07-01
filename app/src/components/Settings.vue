@@ -108,7 +108,35 @@
           <br />
 
           <label>
-            <b>To</b> (enter full URL with http/https)
+            <b>Default 404 redirect URL</b>
+
+            <div class="columns">
+              <div class="column">
+                <a
+                  :href="
+                    defaultNotFoundRedirectURL +
+                    `/?notFound=${mainStore.settings.baseURL}sample-invalid-link`
+                  "
+                  target="_blank"
+                  class="button is-light is-success is-fullwidth"
+                >
+                  Preview: {{ defaultNotFoundRedirectURL }}
+                </a>
+              </div>
+              <div class="column is-narrow">
+                <button
+                  class="button is-light is-warning is-fullwidth"
+                  @click="useDefaultNotFoundRedirectURL"
+                >
+                  Use default link
+                </button>
+              </div>
+            </div>
+          </label>
+          <br />
+
+          <label>
+            <b>Custom link</b> (enter full URL with http/https)
 
             <div class="field has-addons">
               <div class="control is-expanded">
@@ -136,34 +164,6 @@
                   @click="updateNotFoundRedirectURL"
                 >
                   Update
-                </button>
-              </div>
-            </div>
-          </label>
-          <br />
-
-          <label>
-            <b>Default 404 redirect URL</b>
-
-            <div class="columns">
-              <div class="column">
-                <a
-                  :href="
-                    defaultNotFoundRedirectURL +
-                    `/?notFound=${mainStore.settings.baseURL}sample-invalid-link`
-                  "
-                  target="_blank"
-                  class="button is-light is-success is-fullwidth"
-                >
-                  Preview: {{ defaultNotFoundRedirectURL }}
-                </a>
-              </div>
-              <div class="column is-narrow">
-                <button
-                  class="button is-light is-warning is-fullwidth"
-                  @click="notFoundRedirectURL = defaultNotFoundRedirectURL"
-                >
-                  Reset to default link
                 </button>
               </div>
             </div>
@@ -255,5 +255,13 @@ async function updateNotFoundRedirectURL() {
 
   // Call the API to set the not found redirect
   mainStore.setNotFoundMapping({ url: notFoundRedirectURL.value });
+}
+
+async function useDefaultNotFoundRedirectURL() {
+  // Clear the custom redirect URL value first
+  notFoundRedirectURL.value = undefined;
+
+  // Call the API to reset the not found redirect
+  mainStore.useDefaultNotFoundMapping();
 }
 </script>

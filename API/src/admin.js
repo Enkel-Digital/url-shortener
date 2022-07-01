@@ -203,6 +203,25 @@ router.post(
   })
 );
 
+// API to reset not found mapping to its default value
+router.post(
+  "/404/reset",
+  express.json(),
+
+  asyncWrap(async (req, res) => {
+    const docID = await fbAdmin
+      .firestore()
+      .collection("map")
+      .where("slug", "==", "__404__")
+      .where("host", "==", req.jwt.host)
+      .get()
+      .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0].id));
+
+    if (docID) await fbAdmin.firestore().collection("map").doc(docID).delete();
+    res.status(200).json({});
+  })
+);
+
 // API to delete a mapping
 // POST RPC instead of using DEL method to avoid cors pre-flight request
 router.post(

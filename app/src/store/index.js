@@ -122,6 +122,16 @@ export const useStore = defineStore("main", {
       // @todo Tmp set the URL directly without updating the whole object
       this.settings.notFoundMapping = { url: mapping.url };
     },
+
+    async useDefaultNotFoundMapping() {
+      const res = await oof
+        .POST("/admin/mappings/404/reset")
+        .header(getAuthHeader)
+        .runJSON();
+
+      if (!res.ok) return alert(res.error);
+      this.settings.notFoundMapping = undefined;
+    },
   },
 
   // https://www.npmjs.com/package/pinia-plugin-persistedstate
