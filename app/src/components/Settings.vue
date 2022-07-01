@@ -140,6 +140,43 @@
               </div>
             </div>
           </label>
+          <br />
+
+          <label>
+            <b>Default 404 redirect URL</b>
+
+            <div class="columns">
+              <div class="column">
+                <a
+                  :href="
+                    defaultNotFoundRedirectURL +
+                    `/?notFound=${mainStore.settings.baseURL}sample-invalid-link`
+                  "
+                  target="_blank"
+                  class="button is-light is-success is-fullwidth"
+                >
+                  Preview: {{ defaultNotFoundRedirectURL }}
+                </a>
+              </div>
+              <div class="column is-narrow">
+                <button
+                  class="button is-light is-warning is-fullwidth"
+                  @click="notFoundRedirectURL = defaultNotFoundRedirectURL"
+                >
+                  Reset to default link
+                </button>
+              </div>
+            </div>
+          </label>
+
+          <div class="box is-clickable mt-4">
+            <details>
+              <summary>Note: 404 Redirects cannot be permanent</summary>
+              Because if you were to create a mapping after the user has been
+              permanently redirected once, then they would not be able to use
+              that shortened link again without clearing cache.
+            </details>
+          </div>
         </div>
       </div>
 
@@ -195,6 +232,7 @@ watch(mainStore.settings, () => showNotif("Settings updated!"));
 let rootRedirectURL = ref(mainStore.settings.rootMapping?.url);
 let notFoundRedirectURL = ref(mainStore.settings.notFoundMapping?.url);
 let permanent = ref(false);
+const defaultNotFoundRedirectURL = "https://404.short.enkeldigital.com";
 
 async function updateRootRedirectURL() {
   if (isInvalidURL(rootRedirectURL.value))
