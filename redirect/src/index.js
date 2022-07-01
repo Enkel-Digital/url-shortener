@@ -4,7 +4,11 @@ require("dotenv").config();
 // setup app
 const app = require("express")();
 const { asyncWrap, _500 } = require("express-error-middlewares");
-const fbAdmin = require("@enkeldigital/firebase-admin");
+
+// Precreate the collection ref to avoiding calling this method over and over again
+const fsM = require("@enkeldigital/firebase-admin")
+  .firestore()
+  .collection("map");
 
 const port = process.env.PORT || 5000; // Defaults to PORT 5000
 
@@ -31,9 +35,7 @@ app
       const slug = getSlug(req.path).slice(1);
 
       // Get mapping from firestore and returns document if found
-      const doc = await fbAdmin
-        .firestore()
-        .collection("map")
+      const doc = await fsM
         // Filter by slug first as it will narrow the results down much faster first compared to host
         // As a slug will probably be more unique than a hostname
         .where("slug", "==", slug)
@@ -44,9 +46,7 @@ app
       // If the mapping is not found, either show a preconfigured 404 page or a generic 404 page
       if (!doc) {
         // Get 404 mapping from firestore and returns document if found
-        const notFoundDoc = await fbAdmin
-          .firestore()
-          .collection("map")
+        const notFoundDoc = await fsM
           // Filter by slug first as it will narrow the results down much faster first compared to host
           // As the number of __404__ slugs will probably be more than the average number of mappings per host
           .where("slug", "==", "__404__")
@@ -80,13 +80,9 @@ app
       // Only track the API call after responding to the client to reduce client call latency
       // No need to await here as it is a fire and forget type
       // @todo Here it is updating it in the map collection, but we still need to update again in the usage ...
-      fbAdmin
-        .firestore()
-        .collection("map")
-        .doc(doc.id)
-        .update({
-          used: require("firebase-admin").firestore.FieldValue.increment(1),
-        });
+      fsM.doc(doc.id).update({
+        used: require("firebase-admin").firestore.FieldValue.increment(1),
+      });
     })
   )
 
