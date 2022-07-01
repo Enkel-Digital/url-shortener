@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // setup app
 const app = require("express")();
-const { asyncWrap, _404, _500 } = require("express-error-middlewares");
+const { asyncWrap, _500 } = require("express-error-middlewares");
 const fbAdmin = require("@enkeldigital/firebase-admin");
 
 const port = process.env.PORT || 5000; // Defaults to PORT 5000
@@ -57,10 +57,13 @@ app
         // If there is one set by the admin, respond with a temporary redirect to the provided not found page
         // Temporary redirect only as the admin might add the slug later on, and we do not want client to cache the 404
         //
-        // @todo Redirect to a statically hosted not found page instead if the user did not set any 404 page
+        // Redirects to a statically hosted not found page instead if the user did not set any 404 page
         return notFoundDoc
           ? res.redirect(302, notFoundDoc.data().url)
-          : res.status(404).send("Error: Invalid link");
+          : res.redirect(
+              302,
+              `https://404.short.enkeldigital.com/?notFound=${req.hostname}${req.originalUrl}`
+            );
       }
 
       // @todo Redirect to a statically hosted error page instead, and trigger alert to developer
@@ -87,9 +90,11 @@ app
     })
   )
 
-  // Mount the 404 and 500 error handling middleware last
-  // @todo Might use a custom 404 handler to give client more information, can be a route in the domain's landing page to tell them 404
-  .use(_404)
+  // There is no need for a 404 handler as the default route handler matches all routes
+  // and if the redirect mapping is not found, the not found redirect is handled within the main request handler too.
+  // .use(_404)
+
+  // Mount the 500 error handling middleware last
   .use(_500)
 
   // Setup PORT last to ensure all setup is done before server starts listening to traffic
