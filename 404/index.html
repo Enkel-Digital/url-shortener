@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+
+<body>
+  <div class="container" style="max-width: 50rem">
+    <div class="columns is-multiline mx-6 my-6">
+      <div class="column is-full">
+        <p class="title is-3">Invalid link!</p>
+
+        <div class="box is-hidden" id="locationBox">
+          <!-- Invalid URL will be injected here -->
+          <span class="subtitle px-2" id="location" style="background-color: #f5f5f5; color: #7a7a7a;"></span>
+        </div>
+
+        <div class="columns is-vcentered">
+          <div class="column">
+            <p class="subtitle">
+              The page you tried to look for does not exists!
+            </p>
+          </div>
+
+          <div class="column is-narrow">
+            <!--
+              Default href link is the google form, however if there is a notFound url included as URL query,
+              this href attribute will be replaced with the link to the same form that pre-fills the link input for users
+            -->
+            <a id="reportIssue" class="button is-light is-warning is-fullwidth" style="word-wrap: break-word;"
+              href="https://docs.google.com/forms/d/e/1FAIpQLScitwMkinKCtaJ7k4Rxua9Uf-Nb8OEI0C6EqTZoAilOzO32tw/viewform?usp=sf_link"
+              target="_blank" rel="noopener">
+              report issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="column is-full">
+        <hr />
+      </div>
+
+      <div class="column is-full">
+        <a class="button is-light is-success is-fullwidth" href="https://home.short.enkeldigital.com">
+          Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script to run only after page load -->
+  <script>
+    const params = new URLSearchParams(window.location.search)
+    const originalURL = params.get("notFound")
+
+    if (originalURL !== null) {
+      // Set the subtitle to show the user the incorrect link
+      document.getElementById("location").textContent = originalURL
+
+      // Show the location box only after the location has been set, else it will remove hidden from the user
+      document.getElementById("locationBox").classList.remove("is-hidden");
+
+      // Set report issue link to be pre-filled
+      document.getElementById("reportIssue").setAttribute("href", "https://docs.google.com/forms/d/e/1FAIpQLScitwMkinKCtaJ7k4Rxua9Uf-Nb8OEI0C6EqTZoAilOzO32tw/viewform?usp=pp_url&entry.636416495=" + originalURL)
+    }
+  </script>
+</body>
+
+</html>

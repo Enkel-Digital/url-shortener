@@ -11,6 +11,8 @@ This is a monorepo consisting of the following subrepos
 - [redirect](./redirect)
     - The main redirect service that redirects slugs to URLs
     - This is a standalone service seperate from the CRUD API to improve serverless cold startup times by only loading the neccessary items to serve the redirect, this service will be ran with priority and higher capacity/redundancy compared to the API service for the client app.
+- [404](./404)
+    - Landing page for the default 404 redirect, to show users that the URL used was invalid instead of simply sending back the text "invalid url"
 
 
 ## Author, License
