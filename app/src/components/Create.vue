@@ -104,6 +104,23 @@
       </div>
 
       <div class="column is-full">
+        <label class="checkbox" for="querypassQueryCheckbox">
+          <input
+            v-model="passQuery"
+            type="checkbox"
+            id="querypassQueryCheckbox"
+          />
+          Allow URL queries to pass through?
+        </label>
+
+        <div v-if="passQuery" class="content box">
+          <ul>
+            <li>Note that this may have unintended side effects</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="column is-full">
         <button
           class="button is-light is-success is-fullwidth"
           @click="create"
@@ -147,6 +164,8 @@ export default {
 
       expiryTime: currentDatetime,
       expiry: undefined,
+
+      passQuery: false,
     };
   },
 
@@ -178,11 +197,15 @@ export default {
       // @todo This check could possibly be done on frontend if we have all the mappings, but backend still needs to double check
 
       // @todo Add expiry time
-      const success = await this.createMapping({
+      const mapping = {
         slug: this.slug,
         url: this.url,
         permanent: this.permanent,
-      });
+      };
+      // Only add this property if it is true
+      if (this.passQuery) mapping.passQuery = this.passQuery;
+
+      const success = await this.createMapping(mapping);
 
       // Make sure that this method call ends right here by putting it in a return expression
       if (!success) return confirm("Try again?") && this.create();
