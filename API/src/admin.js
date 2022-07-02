@@ -9,16 +9,16 @@
 const express = require("express");
 const router = express.Router();
 const { asyncWrap } = require("express-error-middlewares");
-const fbAdmin = require("@enkeldigital/firebase-admin");
 const unixseconds = require("unixseconds");
+
+const fbAdmin = require("@enkeldigital/firebase-admin");
+const mapCollRef = fbAdmin.firestore().collection("map");
 
 // API to get all mappings
 router.get(
   "/all",
   asyncWrap(async (req, res) =>
-    fbAdmin
-      .firestore()
-      .collection("map")
+    mapCollRef
       .where("host", "==", req.jwt.host)
       .orderBy("createdAt", "desc")
       .get()
@@ -65,9 +65,7 @@ router.post(
 
   asyncWrap(async (req, res) => {
     // Check to ensure that the slug for that particular domain is not already taken
-    const doc = await fbAdmin
-      .firestore()
-      .collection("map")
+    const doc = await mapCollRef
       // Filter by slug first as it will narrow the results down much faster first compared to host
       // As a slug will probably be more unique than a hostname
       .where("slug", "==", req.body.slug)
@@ -77,9 +75,7 @@ router.post(
     if (doc !== undefined)
       res.status(400).json({ error: "Slug is already used!" });
 
-    fbAdmin
-      .firestore()
-      .collection("map")
+    mapCollRef
       .add({
         host: req.jwt.host,
         slug: req.body.slug,
@@ -125,9 +121,7 @@ router.post(
 
     // Check if slug for that particular domain is set already,
     // Override if set, else create a new document.
-    await fbAdmin
-      .firestore()
-      .collection("map")
+    await mapCollRef
       // Filter by slug first as it will narrow the results down much faster first compared to host
       // As a slug will probably be more unique than a hostname.
       // Root redirect means that the slug should be an empty string
@@ -136,12 +130,8 @@ router.post(
       .get()
       .then((snapshot) =>
         snapshot.empty
-          ? fbAdmin.firestore().collection("map").add(redirectDoc)
-          : fbAdmin
-              .firestore()
-              .collection("map")
-              .doc(snapshot.docs[0].id)
-              .set(redirectDoc)
+          ? mapCollRef.add(redirectDoc)
+          : mapCollRef.doc(snapshot.docs[0].id).set(redirectDoc)
       );
 
     res.status(201).json({});
@@ -180,9 +170,7 @@ router.post(
 
     // Check if slug for that particular domain is set already,
     // Override if set, else create a new document.
-    await fbAdmin
-      .firestore()
-      .collection("map")
+    await mapCollRef
       // Filter by slug first as it will narrow the results down much faster first compared to host
       // As a slug will probably be more unique than a hostname.
       // Not found redirect means that the slug is the specially reserved one
@@ -191,12 +179,8 @@ router.post(
       .get()
       .then((snapshot) =>
         snapshot.empty
-          ? fbAdmin.firestore().collection("map").add(redirectDoc)
-          : fbAdmin
-              .firestore()
-              .collection("map")
-              .doc(snapshot.docs[0].id)
-              .set(redirectDoc)
+          ? mapCollRef.add(redirectDoc)
+          : mapCollRef.doc(snapshot.docs[0].id).set(redirectDoc)
       );
 
     res.status(201).json({});
@@ -209,15 +193,13 @@ router.post(
   express.json(),
 
   asyncWrap(async (req, res) => {
-    const docID = await fbAdmin
-      .firestore()
-      .collection("map")
+    const docID = await mapCollRef
       .where("slug", "==", "__404__")
       .where("host", "==", req.jwt.host)
       .get()
       .then((snapshot) => (snapshot.empty ? undefined : snapshot.docs[0].id));
 
-    if (docID) await fbAdmin.firestore().collection("map").doc(docID).delete();
+    if (docID) await mapCollRef.doc(docID).delete();
     res.status(200).json({});
   })
 );
@@ -227,9 +209,7 @@ router.post(
 router.post(
   "/delete/:mappingID",
   asyncWrap(async (req, res) => {
-    fbAdmin
-      .firestore()
-      .collection("map")
+    mapCollRef
       .doc(req.params.mappingID)
       .delete()
       .then(() => res.status(200).json({}));
