@@ -14,6 +14,7 @@ export const useStore = defineStore("main", {
       notFoundMapping: undefined,
 
       defaultToPermanentRedirects: false,
+      defaultToQueryPassThrough: false,
       redirectBackToHome: true,
 
       // The baseURL will be set on login using the host value on the user's JWT

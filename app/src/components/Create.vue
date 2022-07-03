@@ -165,7 +165,7 @@ export default {
       expiryTime: currentDatetime,
       expiry: undefined,
 
-      passQuery: false,
+      passQuery: useStore().settings.defaultToQueryPassThrough,
     };
   },
 

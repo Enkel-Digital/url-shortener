@@ -191,7 +191,21 @@
                 v-model="mainStore.settings.defaultToPermanentRedirects"
                 type="checkbox"
               />
-              Select permanent redirect by default?
+              Select permanent redirect in Create page by default?
+            </label>
+          </div>
+
+          <div class="mx-3">
+            <hr />
+          </div>
+
+          <div class="mx-3">
+            <label class="checkbox">
+              <input
+                v-model="mainStore.settings.defaultToQueryPassThrough"
+                type="checkbox"
+              />
+              Allow URL query pass through in Create page by default?
             </label>
           </div>
 
