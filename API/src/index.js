@@ -6,6 +6,11 @@ const app = require("express")();
 const { _404, _500 } = require("express-error-middlewares");
 const port = process.env.PORT || 3000; // Defaults to PORT 3000
 
+// Set to ignore undefined values, for the "passQuery" property of the new mapping API.
+require("@enkeldigital/firebase-admin").firestore().settings({
+  ignoreUndefinedProperties: true,
+});
+
 app
   // Only allow the main domain for production use and localhost for development
   .use(require("cors")({ origin: "*" }))

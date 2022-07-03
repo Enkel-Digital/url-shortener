@@ -80,6 +80,7 @@ router.post(
         host: req.jwt.host,
         slug: req.body.slug,
         url: req.body.url,
+        passQuery: req.body.passQuery,
         status: req.body.permanent ? 301 : 302,
         createdAt: unixseconds(),
         createdBy: req.jwt.email,
