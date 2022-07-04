@@ -43,6 +43,10 @@ app
   // middleware to add http headers
   .use(require("helmet")())
 
+  // Ignore all favicon requests, and prevent it from costing us a firestore read operation
+  // However this will only be used if the browser gets a 200 or 204 back for the initial response...
+  // .get("/favicon.ico", (_, res) => res.status(204).end())
+
   // Health probe to check if server is up without running any other logic
   // This is the only path that cannot be used as a slug
   .get("/__health__", (_, res) => res.status(200).send("URL Shortener"))
