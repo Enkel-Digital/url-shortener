@@ -16,6 +16,26 @@ const port = process.env.PORT || 5000; // Defaults to PORT 5000
 const getSlug = (path) =>
   path.at(-1) === "/" && path.length > 1 ? path.slice(0, -1) : path;
 
+/** Utility function to combine the URL queries from the original URL to the final URL. */
+function combineQuery(originalUrl, url) {
+  const final = new URL(url);
+  const newSearchParams = new URLSearchParams(final.search);
+
+  // Get search params that user entered using the shortest fake base URL possible
+  const searchParams = new URLSearchParams(
+    new URL(originalUrl, "http://a.a").search
+  );
+
+  // Combine the search parameters
+  for (const [key, value] of searchParams.entries())
+    newSearchParams.append(key, value);
+
+  // The setter for .search will add the ? mark even though the .toString does not include it
+  final.search = newSearchParams.toString();
+
+  return final.toString();
+}
+
 app
   // Use * wildcard for CORS as all domains will be relying on the same server
   .use(require("cors")({ origin: "*" }))
@@ -68,14 +88,19 @@ app
 
       // @todo Redirect to a statically hosted error page instead, and trigger alert to developer
       // @todo Prevent the developer alert from turning into a ddos attack where alerts are spammed
-      const { status, url } = doc.data();
+      const { status, url, passQuery } = doc.data();
       if (!url)
         return res
           .status(500)
           .send("Internal Error: Missing URL Slug in document");
 
       // Respond with a redirect
-      res.redirect(status, url);
+      res.redirect(
+        status,
+
+        // If user wishes to have URL query passed through, then combine queries with combineQuery to get the final URL
+        passQuery ? combineQuery(req.originalUrl, url) : url
+      );
 
       // Only track the API call after responding to the client to reduce client call latency
       // No need to await here as it is a fire and forget type
